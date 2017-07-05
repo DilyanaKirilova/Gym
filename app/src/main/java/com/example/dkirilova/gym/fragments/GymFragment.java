@@ -1,7 +1,5 @@
 package com.example.dkirilova.gym.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +14,6 @@ import com.example.dkirilova.gym.adapters.GymAdapter;
 
 import model.GymManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link GymFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link GymFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GymFragment extends Fragment {
 
     RecyclerView recyclerView;

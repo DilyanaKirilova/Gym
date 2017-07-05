@@ -1,5 +1,6 @@
 package com.example.dkirilova.gym.adapters;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
 import java.util.List;
 
@@ -54,7 +56,11 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             @Override
             public boolean onLongClick(View v) {
 
-                // todo show dialog fragment (delete or modify gym in the list)
+                // todo put the selected gym in bundle
+
+                EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
+                editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
+
                 return true;
             }
         });
