@@ -17,6 +17,7 @@ import model.GymManager;
 public class GymFragment extends Fragment {
 
     RecyclerView recyclerView;
+    GymAdapter gymAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,11 +26,10 @@ public class GymFragment extends Fragment {
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewGym);
 
         if(getActivity() instanceof AppCompatActivity) {
-            GymAdapter gymAdapter = new GymAdapter((AppCompatActivity) getActivity(), GymManager.getInstance().getAllGyms());
+            gymAdapter = new GymAdapter((AppCompatActivity) getActivity(), GymManager.getInstance().getAllGyms());
             recyclerView.setAdapter(gymAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         }
-
         return root;
     }
 }

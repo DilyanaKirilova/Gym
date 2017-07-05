@@ -1,6 +1,6 @@
 package com.example.dkirilova.gym.adapters;
 
-import android.support.v4.app.FragmentTransaction;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,7 +58,10 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
                 // todo put the selected gym in bundle
 
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("gym", gym);
                 EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
+                editOrDeleteGymFragment.setArguments(bundle);
                 editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
 
                 return true;

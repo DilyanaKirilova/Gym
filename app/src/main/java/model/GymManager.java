@@ -44,4 +44,8 @@ public class GymManager {
     public List<Gym> getAllGyms() {
         return Collections.unmodifiableList(allGyms);
     }
+
+    public void deleteGym(Gym gym) {
+        allGyms.remove(gym);
+    }
 }

@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 import model.validators.Validator;
 
 /**
  * Created by dkirilova on 7/5/2017.
  */
 
-public class Exercise {
+public class Exercise implements Serializable{
     private int duration;
     private int experienceLevel;
     private String id;

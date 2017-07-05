@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 import model.validators.Validator;
 
 /**
  * Created by dkirilova on 7/5/2017.
  */
 
-public class Contact {
+public class Contact implements Serializable{
     private String address;
     private String phoneNumber;
     private String email;

@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import model.validators.Validator;
@@ -8,7 +9,7 @@ import model.validators.Validator;
  * Created by dkirilova on 7/5/2017.
  */
 
-public class Gym {
+public class Gym implements Serializable{
     private boolean isFavourite;
     private int image;
     private int currentCapacity;
@@ -155,5 +156,12 @@ public class Gym {
 
     public int getImage() {
         return image;
+    }
+
+    public void setImage(int image) {
+
+        if(image > 0){
+            this.image = image;
+        }
     }
 }
