@@ -1,6 +1,5 @@
 package model;
 
-import com.example.dkirilova.gym.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,15 +29,15 @@ public class GymManager {
         ArrayList<Exercise> arr1 = new ArrayList<>();
         arr1.add(new Exercise(5, 4, "name1", "instr", "descr"));
 
-        Gym gym0 = new Gym(R.drawable.gym, 5, 4, 1, 1, "Gym1", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
-        Gym gym1 = new Gym(R.drawable.gym, 5, 4, 1, 1, "Gym2", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
-        Gym gym2 = new Gym(R.drawable.gym, 5, 4, 1, 1, "Gym3", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
-        Gym gym3 = new Gym(R.drawable.gym, 5, 4, 1, 1, "Gym4", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
+        Gym gym0 = new Gym(5, 4, 1, 1, "Gym1", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
+        Gym gym1 = new Gym(5, 4, 1, 1, "Gym2", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
+        Gym gym2 = new Gym(5, 4, 1, 1, "Gym3", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
+        Gym gym3 = new Gym(5, 4, 1, 1, "Gym4", "Descr1", "Address1", new Contact("Addr1", "phone", "email1", "person1"), arr, arr1);
 
-        allGyms.add(gym0);
-        allGyms.add(gym1);
-        allGyms.add(gym2);
-        allGyms.add(gym3);
+        //allGyms.add(gym0);
+        //allGyms.add(gym1);
+        //allGyms.add(gym2);
+        //allGyms.add(gym3);
     }
 
     public List<Gym> getAllGyms() {
@@ -47,5 +46,9 @@ public class GymManager {
 
     public void deleteGym(Gym gym) {
         allGyms.remove(gym);
+    }
+
+    public void addGym(Gym gym) {
+        allGyms.add(gym);
     }
 }

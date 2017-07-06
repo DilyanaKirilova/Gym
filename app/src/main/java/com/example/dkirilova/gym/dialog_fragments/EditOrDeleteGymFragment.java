@@ -9,17 +9,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.fragments.EditGymFragment;
+import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
+import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymFragment;
 
+import model.Exercise;
 import model.Gym;
 import model.GymManager;
 
 public class EditOrDeleteGymFragment extends DialogFragment {
 
-    private Button btnEditGym;
-    private Button btnDeleteGym;
+    private Button btnEdit;
+    private Button btnDelete;
     private Gym gym;
+    private Exercise exercise;
 
     public EditOrDeleteGymFragment() {
         // Required empty public constructor
@@ -34,37 +37,50 @@ public class EditOrDeleteGymFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_edit_or_delete_gym, container, false);
+        View root = inflater.inflate(R.layout.fragment_edit_or_delete, container, false);
 
-        btnEditGym = (Button) root.findViewById(R.id.btnEditGym);
-        btnDeleteGym = (Button) root.findViewById(R.id.btnDeleteGym);
+        btnEdit = (Button) root.findViewById(R.id.btnEdit);
+        btnDelete = (Button) root.findViewById(R.id.btnDelete);
 
         if (getArguments() != null) {
             if (getArguments().getSerializable("gym") instanceof Gym) {
                 gym = (Gym) getArguments().getSerializable("gym");
             }
+            else if(getArguments().getSerializable("exercise") instanceof Exercise){
+                exercise = (Exercise) getArguments().getSerializable("exercise");
+            }
         }
 
-        btnEditGym.setOnClickListener(new View.OnClickListener() {
+        btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, new EditGymFragment()).commit();
+                if(gym != null) {
+                    fragmentTransaction.replace(R.id.fragmentContainer, new GymDetailsFragment()).commit();
+                }
+                else if(exercise != null){
+                    fragmentTransaction.replace(R.id.fragmentContainer, new ExerciseDetailsFragment()).commit();
+                }
+
                 dismiss();
             }
         });
 
-        btnDeleteGym.setOnClickListener(new View.OnClickListener() {
+        btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 if (gym != null) {
                     GymManager.getInstance().deleteGym(gym);
-                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainer, new GymFragment()).commit();
-                    dismiss();
                 }
+                else if(exercise != null){
+                    // todo delete exercise
+                    // todo choose different adapters
+                }
+                fragmentTransaction.replace(R.id.fragmentContainer, new GymFragment()).commit();
+                dismiss();
             }
         });
         return root;

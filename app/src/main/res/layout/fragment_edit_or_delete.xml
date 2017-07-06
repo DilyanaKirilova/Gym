@@ -6,17 +6,17 @@
     tools:context="com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment">
 
     <Button
-        android:id="@+id/btnEditGym"
+        android:id="@+id/btnEdit"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Edit gym"/>
+        android:text="Edit"/>
 
     <Button
-        android:id="@+id/btnDeleteGym"
+        android:id="@+id/btnDelete"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Delete gym"/>
+        android:text="Delete"/>
 
 </LinearLayout>

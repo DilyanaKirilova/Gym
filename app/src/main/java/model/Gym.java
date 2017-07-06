@@ -11,7 +11,7 @@ import model.validators.Validator;
 
 public class Gym implements Serializable{
     private boolean isFavourite;
-    private int image;
+    private String image;
     private int currentCapacity;
     private int capacity;
     private double latitude;
@@ -24,13 +24,10 @@ public class Gym implements Serializable{
     private ArrayList<Availability> availabilities;
     private ArrayList<Exercise> exercises;
 
-    public Gym(int image, int currentCapacity, int capacity, double latitude, double longitude, String name, String address, String description,
-               Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
+    public Gym(){};
 
-        // todo correct validation for image
-        if(image > 0){
-            this.image = image;
-        }
+    public Gym(int currentCapacity, int capacity, double latitude, double longitude, String name, String address, String description,
+               Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
 
         if(Validator.isValidString(name)) {
             this.name = name;
@@ -154,14 +151,14 @@ public class Gym implements Serializable{
         return isFavourite;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
 
-        if(image > 0){
+        //if(Validator.isValidString(image)){
             this.image = image;
-        }
+        //}
     }
 }

@@ -1,5 +1,8 @@
 package com.example.dkirilova.gym.adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
+import java.io.File;
 import java.util.List;
 
 import model.Gym;
@@ -29,7 +34,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
     private AppCompatActivity activity;
     private List<Gym> gyms;
 
-    public GymAdapter(AppCompatActivity activity, List<Gym> gyms){
+    public GymAdapter(AppCompatActivity activity, List<Gym> gyms) {
         this.activity = activity;
         this.gyms = gyms;
     }
@@ -49,7 +54,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
         holder.tvGymName.setText(gym.getName());
         holder.tvGymAddress.setText(gym.getAddress());
-        holder.ivImage.setBackgroundResource(gym.getImage());
+        setImage(holder.ivImage, gym.getImage());
 
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -73,19 +78,17 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 gym.setIsFavourite(isChecked);
-                if(isChecked){
+                if (isChecked) {
                     // todo change the icon
-                }
-                else{
+                } else {
                     // todo change the icon
                 }
             }
         });
 
-        if(gym.isFavourite()){
+        if (gym.isFavourite()) {
             // todo change the icon
-        }
-        else{
+        } else {
             // todo change the icon
         }
     }
@@ -96,7 +99,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvGymName;
         private TextView tvGymAddress;
@@ -112,6 +115,24 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             ivImage = (ImageView) itemView.findViewById(R.id.ivGymImage);
             layout = (LinearLayout) itemView.findViewById(R.id.llRowGym);
             chbFavouriteGym = (CheckBox) itemView.findViewById(R.id.chbFavouriteGym);
+        }
+    }
+
+    private void setImage(ImageView image, String uriStr) {
+        if (image == null) {
+            return;
+        }
+        if (uriStr == null) {
+            image.setBackgroundResource(R.drawable.gym);
+            return;
+        }
+
+        Uri uri = Uri.parse(uriStr);
+        File imgFile = new File(uri.getPath());
+
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            image.setImageBitmap(myBitmap);
         }
     }
 }

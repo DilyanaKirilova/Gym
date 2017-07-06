@@ -10,7 +10,8 @@ import model.validators.Validator;
 
 public class Exercise implements Serializable{
     private int duration;
-    private int experienceLevel;
+    private int level;
+    private String image;
     private String id;
     private String name;
     private String instructor;
@@ -22,7 +23,7 @@ public class Exercise implements Serializable{
             this.duration = duration;
         }
         if(experienceLevel > 0 && experienceLevel <= 10) {
-            this.experienceLevel = experienceLevel;
+            this.level = experienceLevel;
         }
         if(Validator.isValidString(name)) {
             this.name = name;
@@ -44,7 +45,7 @@ public class Exercise implements Serializable{
 
     public void setExperienceLevel(int experienceLevel) {
         if(experienceLevel > 0 && experienceLevel <= 10) {
-            this.experienceLevel = experienceLevel;
+            this.level = experienceLevel;
         }
     }
 
@@ -70,5 +71,17 @@ public class Exercise implements Serializable{
         if(Validator.isValidString(description)){
             this.description = description;
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getImage() {
+        return image;
     }
 }

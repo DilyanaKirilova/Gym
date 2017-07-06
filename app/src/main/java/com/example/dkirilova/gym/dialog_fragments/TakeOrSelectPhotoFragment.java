@@ -6,16 +6,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.fragments.GymFragment;
 
 import java.io.IOException;
 
 import model.Gym;
+import model.GymManager;
+import model.validators.Validator;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -85,26 +91,30 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
-            Uri uri = data.getData();
+            String strUri = data.getData().toString();
+            ImageView imageView = (ImageView) root.findViewById(R.id.img);
 
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            setImage(strUri, imageView);
 
-                //todo change the gym image in the list
-                //ImageView imageView = (ImageView) root.findViewById(R.id.img);
-                //imageView.setImageBitmap(bitmap);
-
-                if (getArguments() != null) {
-                    if (getArguments().getSerializable("gym") instanceof Gym) {
-                        gym = (Gym) getArguments().getSerializable("gym");
-
-                        //todo set the image id
-
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (getArguments() != null) {
+                gym = (Gym) getArguments().getSerializable("gym");
+                gym.setImage(strUri);
             }
+        }
+    }
+
+    public void setImage(String strUri, ImageView imageView) {
+
+        if (imageView == null || !Validator.isValidString(strUri)) {
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
