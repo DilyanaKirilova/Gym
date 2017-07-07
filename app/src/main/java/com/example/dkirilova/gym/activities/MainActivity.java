@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
 import com.example.dkirilova.gym.R;
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ImageButton ibAdd;
-    private ImageButton ibFavourite;
+    private CheckBox chbFavourite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         ibAdd = (ImageButton) findViewById(R.id.ibAdd);
-        ibFavourite = (ImageButton) findViewById(R.id.ibFavourite);
+        chbFavourite = (CheckBox) findViewById(R.id.chbFavourite);
 
         ibAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,20 +56,27 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ibFavourite.setOnClickListener(new View.OnClickListener() {
+        chbFavourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(ibFavourite.getBackground().equals(R.mipmap.ic_favorite_border_black_24dp)){
-                    ibFavourite.setBackgroundResource(R.mipmap.ic_favorite_black_24dp);
-                    // show only favourites
-                }else {
-                    ibFavourite.setBackgroundResource(R.mipmap.ic_favorite_border_black_24dp);
-                    // show all
+                MainFragment mainFragment = new MainFragment();
+                Bundle bundle = new Bundle();
+                if (isChecked) {
+                    chbFavourite.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+                    bundle.putString("recycler_view", "favourites");
+                } else {
+                    chbFavourite.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
                 }
+
+                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+                mainFragment.setArguments(bundle);
+                f.replace(R.id.fragmentContainer, mainFragment).commit();
             }
         });
-        // replace with fragment with fitness list
+
+
+       //replace with fragment with fitness list
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, new MainFragment()).commit();

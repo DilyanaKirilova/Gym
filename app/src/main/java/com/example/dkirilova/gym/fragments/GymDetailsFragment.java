@@ -118,7 +118,6 @@ public class GymDetailsFragment extends Fragment {
 
                 if(gym != null){
                     FitnessManager.getInstance().delete(gym);
-                    Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
                 }
 
                 gym = new Gym();

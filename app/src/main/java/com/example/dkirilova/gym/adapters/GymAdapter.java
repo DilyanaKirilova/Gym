@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.util.List;
 
 import model.gyms.Gym;
+import model.singleton.FitnessManager;
 
 /**
  * Created by dkirilova on 7/5/2017.
@@ -51,7 +53,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final Gym gym = gyms.get(position);
 
@@ -93,23 +95,32 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
                 gym.setIsFavourite(isChecked);
                 if (isChecked) {
-                    // todo change the icon
+                    holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+                    FitnessManager.getInstance().delete(gym);
+                    gym.setIsFavourite(true);
+                    FitnessManager.getInstance().add(gym);
                 } else {
-                    // todo change the icon
+                    holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
+                    FitnessManager.getInstance().delete(gym);
+                    gym.setIsFavourite(false);
+                    FitnessManager.getInstance().add(gym);
                 }
             }
         });
 
         if (gym.isFavourite()) {
-            // todo change the icon
+            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
         } else {
-            // todo change the icon
+            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
         }
     }
 
     @Override
     public int getItemCount() {
-        return gyms.size();
+        if (gyms != null) {
+            return gyms.size();
+        }
+        return 0;
     }
 
 
