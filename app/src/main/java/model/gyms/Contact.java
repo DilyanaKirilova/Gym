@@ -12,7 +12,7 @@ public class Contact implements Serializable{
     private String address;
     private String phoneNumber;
     private String email;
-    private String contactPerson;
+    private String person;
 
     public Contact(String address, String phoneNumber, String email, String contactPerson) {
         if(Validator.isValidString(address)){
@@ -25,7 +25,7 @@ public class Contact implements Serializable{
             this.email = email;
         }
         if(Validator.isValidString(contactPerson)) {
-            this.contactPerson = contactPerson;
+            this.person = contactPerson;
         }
     }
 
@@ -49,7 +49,23 @@ public class Contact implements Serializable{
 
     public void setContactPerson(String contactPerson) {
         if(Validator.isValidString(contactPerson)){
-            this.contactPerson = contactPerson;
+            this.person = contactPerson;
         }
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getPerson() {
+        return person;
     }
 }

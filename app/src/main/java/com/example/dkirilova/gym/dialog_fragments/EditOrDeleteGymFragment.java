@@ -43,9 +43,9 @@ public class EditOrDeleteGymFragment extends DialogFragment {
         btnDelete = (Button) root.findViewById(R.id.btnDelete);
 
         if (getArguments() != null) {
-            if (getArguments().getSerializable("gym") instanceof Gym) {
+            if (getArguments().getSerializable("gym") != null) {
                 gym = (Gym) getArguments().getSerializable("gym");
-            } else if (getArguments().getSerializable("exercise") instanceof Exercise) {
+            } else if (getArguments().getSerializable("exercise") != null) {
                 exercise = (Exercise) getArguments().getSerializable("exercise");
             }
         }
@@ -56,9 +56,13 @@ public class EditOrDeleteGymFragment extends DialogFragment {
 
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 if (gym != null) {
-                    fragmentTransaction.replace(R.id.fragmentContainer, new GymDetailsFragment()).commit();
+                    GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+                    gymDetailsFragment.setArguments(getArguments());
+                    fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
                 } else if (exercise != null) {
-                    fragmentTransaction.replace(R.id.fragmentContainer, new ExerciseDetailsFragment()).commit();
+                    ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
+                    exerciseDetailsFragment.setArguments(getArguments());
+                    fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
                 }
 
                 dismiss();

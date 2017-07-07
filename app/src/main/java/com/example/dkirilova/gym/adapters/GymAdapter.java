@@ -1,5 +1,6 @@
 package com.example.dkirilova.gym.adapters;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
 import java.io.File;
@@ -62,7 +65,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             public boolean onLongClick(View v) {
 
                 // todo put the selected gym in bundle
-
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("gym", gym);
                 EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
@@ -70,6 +72,18 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
                 editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
 
                 return true;
+            }
+        });
+
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("gym", gym);
+                Intent intent = new Intent(activity, DetailsActivity.class);
+                intent.putExtra("gym", bundle);
+                intent.putExtra("replace_fragment", "gym_details");
+                activity.startActivity(intent);
             }
         });
 

@@ -1,24 +1,30 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.dialog_fragments.TakeOrSelectPhotoFragment;
+import com.example.dkirilova.gym.activities.MainActivity;
+
+import java.util.ArrayList;
 
 import model.gyms.Contact;
+import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
 import model.validators.Validator;
+
+import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
+import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
 public class GymDetailsFragment extends Fragment {
 
@@ -43,12 +49,14 @@ public class GymDetailsFragment extends Fragment {
     private String contactEmail;
     private String contactPerson;
     private Contact contact;
+    private ArrayList<EditText> eTexts = new ArrayList<>();
 
     //todo recyclerview for exercises
 
-    private Button btnAddPhoto;
-    private Button btnSave;
-    private Gym gym = new Gym();
+    private Button btnSelectPhoto;
+    private Button btnSaveChanges;
+    private Gym gym;
+    private Bundle bundle = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -56,8 +64,9 @@ public class GymDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
 
-        btnAddPhoto = (Button) root.findViewById(R.id.btnDGAddPhoto);
-        btnSave = (Button) root.findViewById(R.id.btnDGSave);
+        ivImage = (ImageView) root.findViewById(R.id.ivDGImage);
+        btnSelectPhoto = (Button) root.findViewById(R.id.btnDGAddPhoto);
+        btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
         etName = (EditText) root.findViewById(R.id.etDGName);
         etAddress = (EditText) root.findViewById(R.id.etDGAddress);
         etCapacity = (EditText) root.findViewById(R.id.etCapacity);
@@ -68,32 +77,51 @@ public class GymDetailsFragment extends Fragment {
         etContactPhoneNum = (EditText) root.findViewById(R.id.etCPhone);
         etDescription = (EditText) root.findViewById(R.id.etDGDescription);
 
-        editable(false);
-        if (getArguments() != null) {
-            gym = (Gym) getArguments().getSerializable("gym");
+        eTexts.add(etName);
+        eTexts.add(etAddress);
+        eTexts.add(etDescription);
+        eTexts.add(etContactEmail);
+        eTexts.add(etContactAddress);
+        eTexts.add(etContactPerson);
+        eTexts.add(etContactPhoneNum);
+        eTexts.add(etCapacity);
+        eTexts.add(etCurrentCapacity);
 
-            Bundle b = getArguments();
-            if(b.getString("edit") != null){
-                editable(true);
+        changeStateEditable(eTexts, false);
+        btnSelectPhoto.setVisibility(View.GONE);
+        btnSaveChanges.setVisibility(View.GONE);
+
+        if (getArguments() != null) {
+            bundle = getArguments();
+
+            if (bundle.getSerializable("gym") != null || bundle.getString("edit") != null) {
+                gym = (Gym) getArguments().getSerializable("gym");
+                setGymData();
+            }
+            if(bundle.getSerializable("gym") == null || bundle.getString("edit") != null){
+                changeStateEditable(eTexts, true);
+                btnSelectPhoto.setVisibility(View.VISIBLE);
+                btnSaveChanges.setVisibility(View.VISIBLE);
             }
         }
 
-        btnAddPhoto.setOnClickListener(new View.OnClickListener() {
+        btnSelectPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("gym", gym);
-                TakeOrSelectPhotoFragment takeOrSelectPhotoFragment = new TakeOrSelectPhotoFragment();
-                takeOrSelectPhotoFragment.setArguments(bundle);
-                takeOrSelectPhotoFragment.show(getActivity().getSupportFragmentManager(), "selectImageFragment");
+                takePhoto(gym, getActivity());
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        btnSaveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                if(gym != null){
+                    FitnessManager.getInstance().delete(gym);
+                    Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
+                }
+
+                gym = new Gym();
                 name = etName.getText().toString().trim();
                 address = etAddress.getText().toString().trim();
                 description = etDescription.getText().toString().trim();
@@ -128,6 +156,8 @@ public class GymDetailsFragment extends Fragment {
                         Validator.isEmptyField(contactPhoneNum, etContactPhoneNum))) {
 
 
+                    //todo save the image here!
+
                     contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
                     gym.setName(name);
                     gym.setAddress(address);
@@ -135,11 +165,11 @@ public class GymDetailsFragment extends Fragment {
                     gym.setCurrentCapacity(currentCapacity);
                     gym.setDescription(description);
                     gym.setContact(contact);
-                    // add to gym list
 
                     FitnessManager.getInstance().add(gym);
-                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainer, new MainFragment()).commit();
+
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -147,32 +177,16 @@ public class GymDetailsFragment extends Fragment {
         return root;
     }
 
-
-    public void editable(Boolean flag) {
-        changeState(etName, flag);
-        changeState(etAddress, flag);
-        changeState(etDescription, flag);
-        changeState(etContactEmail, flag);
-        changeState(etContactAddress, flag);
-        changeState(etContactPerson, flag);
-        changeState(etContactPhoneNum, flag);
-        changeState(etCapacity, flag);
-        changeState(etCurrentCapacity, flag);
-    }
-
-
-    private void changeState(EditText editText, Boolean flag){
-
-        if(flag) {
-            editText.setKeyListener((KeyListener) editText.getTag());
-            btnAddPhoto.setVisibility(View.VISIBLE);
-            btnSave.setVisibility(View.VISIBLE);
-        }
-        else {
-            editText.setTag(editText.getKeyListener());
-            editText.setKeyListener(null);
-            btnAddPhoto.setVisibility(View.GONE);
-            btnSave.setVisibility(View.GONE);
-        }
+    private void setGymData(){
+        //todo set image
+        etName.setText(gym.getName());
+        etAddress.setText(gym.getAddress());
+        etDescription.setText(gym.getDescription());
+        etCapacity.setText(String.valueOf(gym.getCapacity()));
+        etCurrentCapacity.setText(String.valueOf(gym.getCurrentCapacity()));
+        etContactEmail.setText(gym.getContactEmail());
+        etContactAddress.setText(gym.getContactAddress());
+        etContactPhoneNum.setText(gym.getContactPhoneNumber());
+        etContactPerson.setText(gym.getContactPerson());
     }
 }
