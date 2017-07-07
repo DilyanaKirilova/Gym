@@ -22,7 +22,7 @@ import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 import java.io.File;
 import java.util.List;
 
-import model.Gym;
+import model.gyms.Gym;
 
 /**
  * Created by dkirilova on 7/5/2017.

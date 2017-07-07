@@ -1,4 +1,4 @@
-package model;
+package model.gyms;
 
 import java.io.Serializable;
 

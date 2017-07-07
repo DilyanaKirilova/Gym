@@ -6,21 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.fragments.GymFragment;
 
 import java.io.IOException;
 
-import model.Gym;
-import model.GymManager;
+import model.gyms.Gym;
 import model.validators.Validator;
 
 import static android.app.Activity.RESULT_OK;

@@ -34,7 +34,7 @@
             android:id="@+id/etDGAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Address" />
+            android:hint="Address"/>
 
         <EditText
             android:id="@+id/etDGDescription"
@@ -47,14 +47,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Capacity"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/etCurrentCapacity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Current capacity"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             android:id="@+id/etCPerson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Person" />
+            android:hint="Person"/>
 
         <EditText
             android:id="@+id/etCAddress"
@@ -79,19 +79,20 @@
             android:id="@+id/etCEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:hint="Email"/>
 
         <EditText
             android:id="@+id/etCPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone number" />
+            android:hint="Phone number"/>
 
         <Button
             android:id="@+id/btnDGSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save" />
+            android:text="Save"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvExercises"

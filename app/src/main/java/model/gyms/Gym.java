@@ -1,8 +1,7 @@
-package model;
+package model.gyms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import model.validators.Validator;
 
 /**

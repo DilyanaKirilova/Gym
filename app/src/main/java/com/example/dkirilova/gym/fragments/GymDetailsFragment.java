@@ -3,6 +3,7 @@ package com.example.dkirilova.gym.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.dialog_fragments.TakeOrSelectPhotoFragment;
 
-import model.Contact;
-import model.Gym;
-import model.GymManager;
+import model.gyms.Contact;
+import model.gyms.Gym;
+import model.singleton.FitnessManager;
 import model.validators.Validator;
 
 public class GymDetailsFragment extends Fragment {
+
 
     private ImageView ivImage;
     private EditText etName;
@@ -47,19 +50,11 @@ public class GymDetailsFragment extends Fragment {
     private Button btnSave;
     private Gym gym = new Gym();
 
-    public GymDetailsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
-
-        if (getArguments() != null) {
-                gym = (Gym) getArguments().getSerializable("gym");
-        }
 
         btnAddPhoto = (Button) root.findViewById(R.id.btnDGAddPhoto);
         btnSave = (Button) root.findViewById(R.id.btnDGSave);
@@ -72,6 +67,16 @@ public class GymDetailsFragment extends Fragment {
         etContactEmail = (EditText) root.findViewById(R.id.etCEmail);
         etContactPhoneNum = (EditText) root.findViewById(R.id.etCPhone);
         etDescription = (EditText) root.findViewById(R.id.etDGDescription);
+
+        editable(false);
+        if (getArguments() != null) {
+            gym = (Gym) getArguments().getSerializable("gym");
+
+            Bundle b = getArguments();
+            if(b.getString("edit") != null){
+                editable(true);
+            }
+        }
 
         btnAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,14 +102,14 @@ public class GymDetailsFragment extends Fragment {
                 contactEmail = etContactEmail.getText().toString().trim();
                 contactPhoneNum = etContactPhoneNum.getText().toString().trim();
 
-                if(etCapacity.getText().toString().isEmpty()){
+                if (etCapacity.getText().toString().isEmpty()) {
                     etCapacity.setError("..");
                     etCapacity.requestFocus();
-                } else{
+                } else {
                     capacity = Integer.valueOf(etCapacity.getText().toString());
                 }
 
-                if(etCurrentCapacity.getText().toString().isEmpty()){
+                if (etCurrentCapacity.getText().toString().isEmpty()) {
                     etCurrentCapacity.setError("..");
                     etCurrentCapacity.requestFocus();
                 } else {
@@ -120,8 +125,7 @@ public class GymDetailsFragment extends Fragment {
                         Validator.isEmptyField(contactPerson, etContactPerson) ||
                         Validator.isEmptyField(contactAddress, etContactAddress) ||
                         Validator.isEmptyField(contactEmail, etContactEmail) ||
-                        Validator.isEmptyField(contactPhoneNum, etContactPhoneNum))){
-
+                        Validator.isEmptyField(contactPhoneNum, etContactPhoneNum))) {
 
 
                     contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
@@ -133,9 +137,9 @@ public class GymDetailsFragment extends Fragment {
                     gym.setContact(contact);
                     // add to gym list
 
-                    GymManager.getInstance().addGym(gym);
+                    FitnessManager.getInstance().add(gym);
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainer, new GymFragment()).commit();
+                    fragmentTransaction.replace(R.id.fragmentContainer, new MainFragment()).commit();
                 }
             }
         });
@@ -144,4 +148,31 @@ public class GymDetailsFragment extends Fragment {
     }
 
 
+    public void editable(Boolean flag) {
+        changeState(etName, flag);
+        changeState(etAddress, flag);
+        changeState(etDescription, flag);
+        changeState(etContactEmail, flag);
+        changeState(etContactAddress, flag);
+        changeState(etContactPerson, flag);
+        changeState(etContactPhoneNum, flag);
+        changeState(etCapacity, flag);
+        changeState(etCurrentCapacity, flag);
+    }
+
+
+    private void changeState(EditText editText, Boolean flag){
+
+        if(flag) {
+            editText.setKeyListener((KeyListener) editText.getTag());
+            btnAddPhoto.setVisibility(View.VISIBLE);
+            btnSave.setVisibility(View.VISIBLE);
+        }
+        else {
+            editText.setTag(editText.getKeyListener());
+            editText.setKeyListener(null);
+            btnAddPhoto.setVisibility(View.GONE);
+            btnSave.setVisibility(View.GONE);
+        }
+    }
 }
