@@ -3,8 +3,6 @@ package com.example.dkirilova.gym.adapters;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
 import java.io.File;
 import java.util.List;
@@ -28,18 +24,20 @@ import model.gyms.Exercise;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
-    private AppCompatActivity activity;
     private List<Exercise> exercises;
+    private ExerciseAdapterController adapterController;
 
-    public ExerciseAdapter(AppCompatActivity activity, List<Exercise> exercises){
-        this.activity = activity;
+
+
+    public ExerciseAdapter(ExerciseAdapterController adapterController, List<Exercise> exercises){
+        this.adapterController = adapterController;
         this.exercises = exercises;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View row = layoutInflater.inflate(R.layout.row_exercise, parent, false);
         return new ViewHolder(row);
     }
@@ -51,16 +49,19 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         holder.tvName.setText(exercise.getName());
         holder.tvExperienceLevel.setText(String.valueOf(exercise.getLevel()));
         setImage(holder.ivImage, exercise.getImage());
+
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("exercise", exercise);
-                EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
-                editOrDeleteGymFragment.setArguments(bundle);
-                editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
+                adapterController.editOrDelete(exercise);
                 return true;
+            }
+        });
+
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapterController.openDetails(exercise);
             }
         });
     }
@@ -100,5 +101,11 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             image.setImageBitmap(myBitmap);
         }
+    }
+
+    public interface ExerciseAdapterController{
+
+        void editOrDelete(Exercise exercise);
+        void openDetails(Exercise exercise);
     }
 }

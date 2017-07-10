@@ -29,6 +29,7 @@ public class ExerciseDetailsFragment extends Fragment {
     private EditText etDuration;
     private ArrayList<EditText> eTexts = new ArrayList<>();
 
+    //todo recycler view for gyms
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

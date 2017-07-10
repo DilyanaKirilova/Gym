@@ -7,11 +7,13 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 
+import model.gyms.Exercise;
 import model.gyms.Gym;
 
-public class DetailsActivity extends AppCompatActivity{
+public class DetailsActivity extends AppCompatActivity {
 
     private Bundle bundle = new Bundle();
 
@@ -25,14 +27,27 @@ public class DetailsActivity extends AppCompatActivity{
 
         if (getIntent().getStringExtra("replace_fragment") != null) {
 
-            if (getIntent().getStringExtra("replace_fragment").equals("add_gym")) {
-                ibEdit.setVisibility(View.GONE);
+            if (getIntent().getStringExtra("replace_fragment").equals("exercise_details")) {
+                bundle = getIntent().getBundleExtra("exercise");
+                Exercise exercise = (Exercise) bundle.getSerializable("exercise");
+                bundle.putSerializable("exercise", exercise);
 
-            } else if(getIntent().getStringExtra("replace_fragment").equals("gym_details")){
+                ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
+                exerciseDetailsFragment.setArguments(bundle);
+                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+                f.replace(R.id.fragmentContainerDetails, exerciseDetailsFragment).commit();
+            } else if (getIntent().getStringExtra("replace_fragment").equals("add_gym")) {
+                ibEdit.setVisibility(View.GONE);
+            } else if (getIntent().getStringExtra("replace_fragment").equals("gym_details")) {
                 bundle = getIntent().getBundleExtra("gym");
                 Gym gym = (Gym) bundle.getSerializable("gym");
                 bundle.putSerializable("gym", gym);
             }
+
+            GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+            gymDetailsFragment.setArguments(bundle);
+            FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+            f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
 
             ibEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -44,11 +59,6 @@ public class DetailsActivity extends AppCompatActivity{
                     f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
                 }
             });
-
-            GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-            gymDetailsFragment.setArguments(bundle);
-            FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-            f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
 
             ibBack.setOnClickListener(new View.OnClickListener() {
                 @Override

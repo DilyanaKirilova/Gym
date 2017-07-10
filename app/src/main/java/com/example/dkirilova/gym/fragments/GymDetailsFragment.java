@@ -17,8 +17,10 @@ import android.widget.ImageView;
 
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
+import com.example.dkirilova.gym.adapters.GymAdapter;
 
 import java.util.ArrayList;
 
@@ -31,7 +33,7 @@ import model.validators.Validator;
 import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
-public class GymDetailsFragment extends Fragment {
+public class GymDetailsFragment extends Fragment implements ExerciseAdapter.ExerciseAdapterController{
 
     private EditText etName;
     private EditText etAddress;
@@ -113,7 +115,7 @@ public class GymDetailsFragment extends Fragment {
 
             if (getActivity() instanceof AppCompatActivity) {
 
-                ExerciseAdapter exerciseAdapter = new ExerciseAdapter((AppCompatActivity) getActivity(), newExercises);
+                ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, newExercises);
                 rvExercises.setAdapter(exerciseAdapter);
                 rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             }
@@ -209,5 +211,18 @@ public class GymDetailsFragment extends Fragment {
         etContactAddress.setText(gym.getContactAddress());
         etContactPhoneNum.setText(gym.getContactPhoneNumber());
         etContactPerson.setText(gym.getContactPerson());
+    }
+
+    @Override
+    public void editOrDelete(Exercise exercise) {}
+
+    @Override
+    public void openDetails(Exercise exercise) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("exercise", exercise);
+        Intent intent = new Intent(getActivity(), DetailsActivity.class);
+        intent.putExtra("exercise", bundle);
+        intent.putExtra("replace_fragment", "exercise_details");
+        startActivity(intent);
     }
 }

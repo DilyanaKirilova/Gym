@@ -19,8 +19,10 @@ import android.widget.ImageButton;
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.fragments.MainFragment;
 
+import model.gyms.Gym;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private CheckBox chbFavourite;
 

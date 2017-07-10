@@ -18,12 +18,11 @@ import android.widget.TextView;
 
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.activities.DetailsActivity;
-import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
 import java.io.File;
 import java.util.List;
 
+import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
 
@@ -33,19 +32,18 @@ import model.singleton.FitnessManager;
 
 public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
-    //todo get activity from parent
-    private AppCompatActivity activity;
+    private GymAdapterController adapterController;
     private List<Gym> gyms;
 
-    public GymAdapter(AppCompatActivity activity, List<Gym> gyms) {
-        this.activity = activity;
+    public GymAdapter(GymAdapterController adapterController, List<Gym> gyms) {
+        this.adapterController = adapterController;
         this.gyms = gyms;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View row = layoutInflater.inflate(R.layout.row_gym, parent, false);
         return new ViewHolder(row);
     }
@@ -63,14 +61,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                // todo put the selected gym in bundle
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("gym", gym);
-                EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
-                editOrDeleteGymFragment.setArguments(bundle);
-                editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
-
+                adapterController.editOrDelete(gym);
                 return true;
             }
         });
@@ -78,12 +69,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("gym", gym);
-                Intent intent = new Intent(activity, DetailsActivity.class);
-                intent.putExtra("gym", bundle);
-                intent.putExtra("replace_fragment", "gym_details");
-                activity.startActivity(intent);
+                adapterController.openDetails(gym);
             }
         });
 
@@ -106,7 +92,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         });
 
         if (gym.isFavourite()) {
-        holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
         } else {
             holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
         }
@@ -115,7 +101,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return (gyms != null? gyms.size(): 0);
+        return (gyms != null ? gyms.size() : 0);
 
     }
 
@@ -155,5 +141,10 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             image.setImageBitmap(myBitmap);
         }
+    }
+
+    public interface GymAdapterController {
+        void editOrDelete(Gym gym);
+        void openDetails(Gym gym);
     }
 }

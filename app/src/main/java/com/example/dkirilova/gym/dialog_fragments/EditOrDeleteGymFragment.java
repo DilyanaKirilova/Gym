@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.adapters.GymAdapter;
 import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 import com.example.dkirilova.gym.fragments.MainFragment;
@@ -17,7 +18,7 @@ import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
 
-public class EditOrDeleteGymFragment extends DialogFragment {
+public class EditOrDeleteGymFragment extends DialogFragment{
 
     private Gym gym;
     private Exercise exercise;
@@ -87,6 +88,4 @@ public class EditOrDeleteGymFragment extends DialogFragment {
         });
         return root;
     }
-
-
 }
