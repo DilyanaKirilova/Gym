@@ -109,10 +109,11 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         });
 
         if (gym.isFavourite()) {
-            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+        holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
         } else {
             holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
         }
+
     }
 
     @Override

@@ -2,6 +2,8 @@ package model.gyms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
+
 import model.validators.Validator;
 
 /**
@@ -11,45 +13,6 @@ import model.validators.Validator;
 public class Gym implements Serializable {
     private boolean isFavourite;
     private String image;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Gym gym = (Gym) o;
-
-        if (isFavourite() != gym.isFavourite()) return false;
-        if (getCurrentCapacity() != gym.getCurrentCapacity()) return false;
-        if (getCapacity() != gym.getCapacity()) return false;
-        if (Double.compare(gym.latitude, latitude) != 0) return false;
-        if (Double.compare(gym.longitude, longitude) != 0) return false;
-        if (getImage() != null ? !getImage().equals(gym.getImage()) : gym.getImage() != null)
-            return false;
-        if (!getName().equals(gym.getName())) return false;
-        if (getAddress() != null ? !getAddress().equals(gym.getAddress()) : gym.getAddress() != null)
-            return false;
-        return getDescription() != null ? getDescription().equals(gym.getDescription()) : gym.getDescription() == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = (isFavourite() ? 1 : 0);
-        result = 31 * result + (getImage() != null ? getImage().hashCode() : 0);
-        result = 31 * result + getCurrentCapacity();
-        result = 31 * result + getCapacity();
-        temp = Double.doubleToLongBits(latitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(longitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + getName().hashCode();
-        result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        return result;
-    }
 
     private int currentCapacity;
     private int capacity;
@@ -64,12 +27,15 @@ public class Gym implements Serializable {
     private ArrayList<Exercise> exercises;
 
     public Gym() {
+        this.id = UUID.randomUUID().toString();
     }
 
     ;
 
     public Gym(int currentCapacity, int capacity, double latitude, double longitude, String name, String address, String description,
                Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
+
+        this.id = UUID.randomUUID().toString();
 
         if (Validator.isValidString(name)) {
             this.name = name;

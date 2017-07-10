@@ -1,6 +1,7 @@
 package model.gyms;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import model.validators.Validator;
 
@@ -18,6 +19,8 @@ public class Exercise implements Serializable{
     private String description;
 
     public Exercise(int duration, int experienceLevel, String name, String instructor, String description) {
+
+        this.id = UUID.randomUUID().toString();
 
         if(duration > 0){
             this.duration = duration;
