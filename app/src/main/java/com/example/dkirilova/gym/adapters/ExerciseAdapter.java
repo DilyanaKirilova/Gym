@@ -9,9 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import com.example.dkirilova.gym.R;
@@ -48,39 +48,42 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final Exercise exercise = exercises.get(position);
-        holder.etName.setText(exercise.getName());
-        holder.etExperienceLevel.setText(exercise.getLevel());
+        holder.tvName.setText(exercise.getName());
+        holder.tvExperienceLevel.setText(String.valueOf(exercise.getLevel()));
         setImage(holder.ivImage, exercise.getImage());
-        holder.layout.setOnClickListener(new View.OnClickListener() {
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
+
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("exercise", exercise);
                 EditOrDeleteGymFragment editOrDeleteGymFragment = new EditOrDeleteGymFragment();
                 editOrDeleteGymFragment.setArguments(bundle);
                 editOrDeleteGymFragment.show(activity.getSupportFragmentManager(), "editOrDeleteGymFragment");
+                return true;
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return exercises.size();
+
+        return (exercises != null? exercises.size(): 0);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView ivImage;
-        private EditText etName;
-        private EditText etExperienceLevel;
+        private TextView tvName;
+        private TextView tvExperienceLevel;
         private LinearLayout layout;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             ivImage = (ImageView) itemView.findViewById(R.id.ivExerciseImage);
-            etName = (EditText) itemView.findViewById(R.id.etEDName);
-            etExperienceLevel = (EditText) itemView.findViewById(R.id.etEDLevel);
+            tvName = (TextView) itemView.findViewById(R.id.tvExerciseName);
+            tvExperienceLevel = (TextView) itemView.findViewById(R.id.tvExerciseLevel);
             layout = (LinearLayout) itemView.findViewById(R.id.llExerciseRow);
         }
     }

@@ -3,17 +3,22 @@ package com.example.dkirilova.gym.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
+import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
 import java.util.ArrayList;
 
@@ -28,8 +33,6 @@ import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
 public class GymDetailsFragment extends Fragment {
 
-
-    private ImageView ivImage;
     private EditText etName;
     private EditText etAddress;
     private EditText etDescription;
@@ -49,24 +52,19 @@ public class GymDetailsFragment extends Fragment {
     private String contactEmail;
     private String contactPerson;
     private Contact contact;
+    private ArrayList<Exercise> newExercises = new ArrayList<>();
     private ArrayList<EditText> eTexts = new ArrayList<>();
 
-    //todo recyclerview for exercises
-
-    private Button btnSelectPhoto;
-    private Button btnSaveChanges;
     private Gym gym;
-    private Bundle bundle = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
-
-        ivImage = (ImageView) root.findViewById(R.id.ivDGImage);
-        btnSelectPhoto = (Button) root.findViewById(R.id.btnDGAddPhoto);
-        btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
+        ImageView ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
+        Button btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
+        ImageButton ibAddExercise = (ImageButton) root.findViewById(R.id.ibAddExercise);
         etName = (EditText) root.findViewById(R.id.etDGName);
         etAddress = (EditText) root.findViewById(R.id.etDGAddress);
         etCapacity = (EditText) root.findViewById(R.id.etCapacity);
@@ -76,6 +74,7 @@ public class GymDetailsFragment extends Fragment {
         etContactEmail = (EditText) root.findViewById(R.id.etCEmail);
         etContactPhoneNum = (EditText) root.findViewById(R.id.etCPhone);
         etDescription = (EditText) root.findViewById(R.id.etDGDescription);
+        RecyclerView rvExercises = (RecyclerView) root.findViewById(R.id.rvExercises);
 
         eTexts.add(etName);
         eTexts.add(etAddress);
@@ -88,27 +87,56 @@ public class GymDetailsFragment extends Fragment {
         eTexts.add(etCurrentCapacity);
 
         changeStateEditable(eTexts, false);
-        btnSelectPhoto.setVisibility(View.GONE);
+        ivSelectPhoto.setVisibility(View.GONE);
+        ibAddExercise.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
 
+
         if (getArguments() != null) {
-            bundle = getArguments();
+            Bundle bundle = getArguments();
 
             if (bundle.getSerializable("gym") != null || bundle.getString("edit") != null) {
                 gym = (Gym) getArguments().getSerializable("gym");
                 setGymData();
+                newExercises.addAll(gym.getExercises());
             }
-            if(bundle.getSerializable("gym") == null || bundle.getString("edit") != null){
+            if (bundle.getSerializable("gym") == null || bundle.getString("edit") != null) {
                 changeStateEditable(eTexts, true);
-                btnSelectPhoto.setVisibility(View.VISIBLE);
+                ivSelectPhoto.setVisibility(View.VISIBLE);
+                ibAddExercise.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
+            }
+
+            if(bundle.getSerializable("array") != null){
+                newExercises = (ArrayList<Exercise>) bundle.getSerializable("array");
+            }
+
+            if (getActivity() instanceof AppCompatActivity) {
+
+                ExerciseAdapter exerciseAdapter = new ExerciseAdapter((AppCompatActivity) getActivity(), newExercises);
+                rvExercises.setAdapter(exerciseAdapter);
+                rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             }
         }
 
-        btnSelectPhoto.setOnClickListener(new View.OnClickListener() {
+        ivSelectPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePhoto(gym, getActivity());
+            }
+        });
+
+        ibAddExercise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("edit", "exercise");
+                bundle.putSerializable("array", newExercises);
+                ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
+                exerciseDetailsFragment.setArguments(bundle);
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+                fragmentTransaction.replace(R.id.fragmentContainerDetails, exerciseDetailsFragment).commit();
             }
         });
 
@@ -116,11 +144,11 @@ public class GymDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(gym != null){
-                    FitnessManager.getInstance().delete(gym);
-                }
+                FitnessManager.getInstance().delete(gym);
 
                 gym = new Gym();
+                gym.setExercises(newExercises);
+                FitnessManager.getInstance().addExercises(newExercises);
                 name = etName.getText().toString().trim();
                 address = etAddress.getText().toString().trim();
                 description = etDescription.getText().toString().trim();
@@ -129,17 +157,11 @@ public class GymDetailsFragment extends Fragment {
                 contactEmail = etContactEmail.getText().toString().trim();
                 contactPhoneNum = etContactPhoneNum.getText().toString().trim();
 
-                if (etCapacity.getText().toString().isEmpty()) {
-                    etCapacity.setError("..");
-                    etCapacity.requestFocus();
-                } else {
+                if (!etCapacity.getText().toString().isEmpty()) {
                     capacity = Integer.valueOf(etCapacity.getText().toString());
                 }
 
-                if (etCurrentCapacity.getText().toString().isEmpty()) {
-                    etCurrentCapacity.setError("..");
-                    etCurrentCapacity.requestFocus();
-                } else {
+                if (!etCurrentCapacity.getText().toString().isEmpty()) {
                     currentCapacity = Integer.valueOf(etCurrentCapacity.getText().toString());
                 }
 
@@ -176,7 +198,7 @@ public class GymDetailsFragment extends Fragment {
         return root;
     }
 
-    private void setGymData(){
+    private void setGymData() {
         //todo set image
         etName.setText(gym.getName());
         etAddress.setText(gym.getAddress());

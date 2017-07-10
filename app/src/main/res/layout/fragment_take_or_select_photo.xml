@@ -10,13 +10,13 @@
         android:id="@+id/btnTakePhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take new photo"/>
+        android:text="@string/take_new_photo"/>
 
     <Button
         android:id="@+id/btnSelectPhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose from gallery"/>
+        android:text="@string/choose_from_gallery"/>
 
     <ImageView
         android:id="@+id/img"

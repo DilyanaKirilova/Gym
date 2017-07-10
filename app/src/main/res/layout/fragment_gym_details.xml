@@ -7,53 +7,46 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/ivDGImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <Button
-            android:id="@+id/btnDGAddPhoto"
+            android:id="@+id/ivDGAddPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:clickable="false"
-            android:text="Add Photo" />
+            android:background="@mipmap/ic_photo_camera_black_24dp"/>
 
         <EditText
             android:id="@+id/etDGName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:hint="@string/name" />
 
         <EditText
             android:id="@+id/etDGAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Address"/>
+            android:hint="@string/address"/>
 
         <EditText
             android:id="@+id/etDGDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description" />
+            android:hint="@string/description" />
 
         <EditText
             android:id="@+id/etCapacity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Capacity"
+            android:hint="@string/capacity"
             android:inputType="number"/>
 
         <EditText
             android:id="@+id/etCurrentCapacity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Current capacity"
+            android:hint="@string/current_capacity"
             android:inputType="number"/>
 
         <TextView
@@ -61,43 +54,59 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="20sp"
-            android:text="Contacts" />
+            android:text="@string/contacts" />
 
         <EditText
             android:id="@+id/etCPerson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Person"/>
+            android:hint="@string/person"/>
 
         <EditText
             android:id="@+id/etCAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Address" />
+            android:hint="@string/address" />
 
         <EditText
             android:id="@+id/etCEmail"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"/>
+            android:hint="@string/email"/>
 
         <EditText
             android:id="@+id/etCPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone number"/>
+            android:hint="@string/phone_number"
+            android:inputType="number"/>
 
-        <Button
-            android:id="@+id/btnDGSave"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:visibility="gone"/>
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="@string/exercises"/>
+
+        <ImageButton
+            android:id="@+id/ibAddExercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@mipmap/ic_add_circle_outline_black_24dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvExercises"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/btnDGSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:visibility="gone"/>
     </LinearLayout>
 </ScrollView>

@@ -21,45 +21,51 @@ public class FitnessManager {
     }
 
     private HashMap<Boolean, HashSet<Gym>> allGyms;
-    private ArrayList<Exercise> exercises;
+    private HashSet<Exercise> exercises;
 
     private FitnessManager() {
         this.allGyms = new HashMap<>();
-        this.exercises = new ArrayList<Exercise>();
+        this.allGyms.put(true, new HashSet<Gym>());
+        this.allGyms.put(false, new HashSet<Gym>());
+        this.exercises = new HashSet<>();
     }
 
     public List<Gym> getAllGyms() {
 
         List<Gym> list = new ArrayList<>();
-        if (allGyms.get(true) != null) {
-            list.addAll(allGyms.get(true));
-        }
-        if (allGyms.get(false) != null) {
-            list.addAll(allGyms.get(false));
-        }
+        list.addAll(allGyms.get(true));
+        list.addAll(allGyms.get(false));
         return Collections.unmodifiableList(list);
     }
 
     public List<Exercise> getAllExercises() {
-        return Collections.unmodifiableList(exercises);
+        List<Exercise> exercisesList = new ArrayList<>();
+        exercisesList.addAll(this.exercises);
+        return Collections.unmodifiableList(exercisesList);
     }
 
 
     public void delete(Gym gym) {
-        if (gym != null && this.allGyms.get(gym.isFavourite()) != null) {
+        if (gym != null && allGyms.containsKey(gym.isFavourite())) {
             this.allGyms.get(gym.isFavourite()).remove(gym);
         }
     }
 
     public void delete(Exercise exercise) {
         exercises.remove(exercise);
+
+        for(Gym gym : allGyms.get(true)){
+            gym.removeExercise(exercise);
+        }
+        for(Gym gym : allGyms.get(false)){
+            gym.removeExercise(exercise);
+        }
     }
 
     public void add(Gym gym) {
-        if (!this.allGyms.containsKey(gym.isFavourite())) {
-            this.allGyms.put(gym.isFavourite(), new HashSet<Gym>());
+        if ((gym) != null) {
+            this.allGyms.get(gym.isFavourite()).add(gym);
         }
-        this.allGyms.get(gym.isFavourite()).add(gym);
     }
 
     public void add(Exercise exercise) {
@@ -67,12 +73,14 @@ public class FitnessManager {
     }
 
     public List<Gym> getFavourites() {
-        if (this.allGyms.containsKey(true)) {
-            List<Gym> favourites = new ArrayList<>();
+        List<Gym> favourites = new ArrayList<>();
+        favourites.addAll(this.allGyms.get(true));
+        return favourites;
+    }
 
-            favourites.addAll(this.allGyms.get(true));
-            return favourites;
+    public void addExercises(ArrayList<Exercise> exercises) {
+        for (Exercise exercise : exercises) {
+            this.exercises.add(exercise);
         }
-        return null;
     }
 }

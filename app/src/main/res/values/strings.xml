@@ -8,4 +8,22 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description">Description</string>
+    <string name="instructor">Instructor</string>
+    <string name="duration">Duration</string>
+    <string name="save">Save</string>
+    <string name="experience_level">Experience level</string>
+    <string name="name">Name</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="address">Address</string>
+    <string name="capacity">Capacity</string>
+    <string name="current_capacity">Current capacity</string>
+    <string name="contacts">Contacts</string>
+    <string name="person">Person</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone number</string>
+    <string name="take_new_photo" />
+    <string name="choose_from_gallery">Choose from gallery</string>
+    <string name="exercises">Exercises</string>
 </resources>

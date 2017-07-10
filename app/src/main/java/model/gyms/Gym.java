@@ -2,6 +2,8 @@ package model.gyms;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import model.validators.Validator;
@@ -28,10 +30,12 @@ public class Gym implements Serializable {
 
     public Gym() {
         this.id = UUID.randomUUID().toString();
+        this.exercises = new ArrayList<>();
     }
 
     ;
 
+    /*
     public Gym(int currentCapacity, int capacity, double latitude, double longitude, String name, String address, String description,
                Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
 
@@ -76,6 +80,7 @@ public class Gym implements Serializable {
             this.exercises = exercises;
         }
     }
+    */
 
     public void setCurrentCapacity(int currentCapacity) {
         if (currentCapacity > 0 && currentCapacity <= this.capacity) {
@@ -134,12 +139,6 @@ public class Gym implements Serializable {
     public void setAvailabilities(ArrayList<Availability> availabilities) {
         if (availabilities != null) {
             this.availabilities = availabilities;
-        }
-    }
-
-    public void setExercises(ArrayList<Exercise> exercises) {
-        if (exercises != null) {
-            this.exercises = exercises;
         }
     }
 
@@ -208,5 +207,35 @@ public class Gym implements Serializable {
             return contact.getPerson();
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Gym gym = (Gym) o;
+
+        return id.equals(gym.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    public List<Exercise> getExercises() {
+        return Collections.unmodifiableList(exercises);
+    }
+
+    public void setExercises(ArrayList<Exercise> exercises) {
+        if(exercises != null) {
+            this.exercises = exercises;
+        }
+    }
+
+    public void removeExercise(Exercise exercise) {
+        this.exercises.remove(exercise);
     }
 }

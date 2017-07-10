@@ -13,29 +13,24 @@ import model.gyms.Gym;
 
 public class DetailsActivity extends AppCompatActivity{
 
-    private ImageButton ibEdit;
-    private ImageButton ibBack;
     private Bundle bundle = new Bundle();
-    private Gym gym;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        ibEdit = (ImageButton) findViewById(R.id.ibEdit);
-        ibBack = (ImageButton) findViewById(R.id.ibBack);
+        ImageButton ibEdit = (ImageButton) findViewById(R.id.ibEdit);
+        ImageButton ibBack = (ImageButton) findViewById(R.id.ibBack);
 
         if (getIntent().getStringExtra("replace_fragment") != null) {
-
-            final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             if (getIntent().getStringExtra("replace_fragment").equals("add_gym")) {
                 ibEdit.setVisibility(View.GONE);
 
             } else if(getIntent().getStringExtra("replace_fragment").equals("gym_details")){
                 bundle = getIntent().getBundleExtra("gym");
-                gym = (Gym) bundle.getSerializable("gym");
+                Gym gym = (Gym) bundle.getSerializable("gym");
                 bundle.putSerializable("gym", gym);
             }
 

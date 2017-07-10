@@ -13,44 +13,43 @@ import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 
-import java.util.List;
-
-import model.gyms.Gym;
 import model.singleton.FitnessManager;
 
 public class MainFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private GymAdapter gymAdapter;
-    private ExerciseAdapter exerciseAdapter;
-    private List<Gym> gyms;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewGym);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewGym);
+
+        //adapters
+        GymAdapter gymsAdapter = new GymAdapter((AppCompatActivity) getActivity(), FitnessManager.getInstance().getAllGyms());
+        GymAdapter favouritesGymsAdapter = new GymAdapter((AppCompatActivity) getActivity(), FitnessManager.getInstance().getFavourites());;
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter((AppCompatActivity) getActivity(), FitnessManager.getInstance().getAllExercises());
 
         if (getActivity() instanceof AppCompatActivity) {
 
-            if(getArguments() != null) {
-                if(getArguments().getString("recycler_view") != null){
-                    if(getArguments().getString("recycler_view") != null){
-                        if(FitnessManager.getInstance().getFavourites() != null) {
-                            gyms = FitnessManager.getInstance().getFavourites();
+            recyclerView.setAdapter(gymsAdapter);
+            if (getArguments() != null) {
+
+                if (getArguments().getString("replace_fragment") != null) {
+                    if (getArguments().getString("replace_fragment").equals("exercises")) {
+                        recyclerView.setAdapter(exerciseAdapter);
+                    } else {
+                        //fragment map
+                    }
+                }
+                if (getArguments().getString("recycler_view") != null) {
+                    if (getArguments().getString("recycler_view").equals("favourites")) {
+                        if (FitnessManager.getInstance().getFavourites() != null) {
+                           recyclerView.setAdapter(favouritesGymsAdapter);
                         }
                     }
-                }else {
-                    gyms = FitnessManager.getInstance().getAllGyms();
                 }
-
             }
-            else{
-                gyms = FitnessManager.getInstance().getAllGyms();
-            }
-            gymAdapter = new GymAdapter((AppCompatActivity) getActivity(), gyms);
-            recyclerView.setAdapter(gymAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         }
         return root;

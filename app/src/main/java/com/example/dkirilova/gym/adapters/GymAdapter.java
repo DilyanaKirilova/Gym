@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -93,7 +91,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                gym.setIsFavourite(isChecked);
                 if (isChecked) {
                     holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
                     FitnessManager.getInstance().delete(gym);
@@ -118,14 +115,12 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (gyms != null) {
-            return gyms.size();
-        }
-        return 0;
+        return (gyms != null? gyms.size(): 0);
+
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvGymName;
         private TextView tvGymAddress;
@@ -133,7 +128,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         private LinearLayout layout;
         private CheckBox chbFavouriteGym;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             tvGymName = (TextView) itemView.findViewById(R.id.tvGymName);

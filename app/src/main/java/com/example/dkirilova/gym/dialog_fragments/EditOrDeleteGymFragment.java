@@ -19,8 +19,6 @@ import model.singleton.FitnessManager;
 
 public class EditOrDeleteGymFragment extends DialogFragment {
 
-    private Button btnEdit;
-    private Button btnDelete;
     private Gym gym;
     private Exercise exercise;
 
@@ -39,8 +37,8 @@ public class EditOrDeleteGymFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_edit_or_delete, container, false);
 
-        btnEdit = (Button) root.findViewById(R.id.btnEdit);
-        btnDelete = (Button) root.findViewById(R.id.btnDelete);
+        Button btnEdit = (Button) root.findViewById(R.id.btnEdit);
+        Button btnDelete = (Button) root.findViewById(R.id.btnDelete);
 
         if (getArguments() != null) {
             if (getArguments().getSerializable("gym") != null) {
@@ -74,7 +72,6 @@ public class EditOrDeleteGymFragment extends DialogFragment {
             public void onClick(View v) {
                 MainFragment mainFragment = new MainFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("replace_fragment", "exercises");
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 if (gym != null) {
                     FitnessManager.getInstance().delete(gym);
