@@ -1,11 +1,8 @@
 package com.example.dkirilova.gym.adapters;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +13,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.example.dkirilova.gym.R;
 
 import java.io.File;
 import java.util.List;
 
-import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
 
@@ -32,10 +27,10 @@ import model.singleton.FitnessManager;
 
 public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
-    private GymAdapterController adapterController;
+    private IGymAdapterController adapterController;
     private List<Gym> gyms;
 
-    public GymAdapter(GymAdapterController adapterController, List<Gym> gyms) {
+    public GymAdapter(IGymAdapterController adapterController, List<Gym> gyms) {
         this.adapterController = adapterController;
         this.gyms = gyms;
     }
@@ -56,7 +51,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         holder.tvGymName.setText(gym.getName());
         holder.tvGymAddress.setText(gym.getAddress());
         setImage(holder.ivImage, gym.getImage());
-
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -96,15 +90,12 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         } else {
             holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
         }
-
     }
 
     @Override
     public int getItemCount() {
         return (gyms != null ? gyms.size() : 0);
-
     }
-
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -143,7 +134,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         }
     }
 
-    public interface GymAdapterController {
+    public interface IGymAdapterController {
         void editOrDelete(Gym gym);
         void openDetails(Gym gym);
     }

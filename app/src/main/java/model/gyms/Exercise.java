@@ -87,4 +87,46 @@ public class Exercise implements Serializable{
     public String getImage() {
         return image;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public String getInstructor() {
+        return instructor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Exercise exercise = (Exercise) o;
+
+        if (getDuration() != exercise.getDuration()) return false;
+        if (getLevel() != exercise.getLevel()) return false;
+        if (getImage() != null ? !getImage().equals(exercise.getImage()) : exercise.getImage() != null)
+            return false;
+        if (!getName().equals(exercise.getName())) return false;
+        if (!getInstructor().equals(exercise.getInstructor())) return false;
+        return getDescription().equals(exercise.getDescription());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getDuration();
+        result = 31 * result + getLevel();
+        result = 31 * result + (getImage() != null ? getImage().hashCode() : 0);
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + getInstructor().hashCode();
+        result = 31 * result + getDescription().hashCode();
+        return result;
+    }
 }
+
+

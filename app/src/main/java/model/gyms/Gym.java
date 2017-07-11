@@ -35,53 +35,6 @@ public class Gym implements Serializable {
 
     ;
 
-    /*
-    public Gym(int currentCapacity, int capacity, double latitude, double longitude, String name, String address, String description,
-               Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
-
-        this.id = UUID.randomUUID().toString();
-
-        if (Validator.isValidString(name)) {
-            this.name = name;
-        }
-
-        if (Validator.isValidString(address)) {
-            this.address = address;
-        }
-
-        if (String.valueOf(latitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.latitude = latitude;
-        }
-
-        if (String.valueOf(longitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.longitude = longitude;
-        }
-
-        if (capacity > 0) {
-            this.capacity = capacity;
-        }
-        if (currentCapacity > 0 && currentCapacity <= capacity) {
-            this.currentCapacity = currentCapacity;
-        }
-
-        if (Validator.isValidString(description)) {
-            this.description = description;
-        }
-
-        if (contact != null) {
-            this.contact = contact;
-        }
-
-        if (availabilities != null) {
-            this.availabilities = availabilities;
-        }
-
-        if (exercises != null) {
-            this.exercises = exercises;
-        }
-    }
-    */
-
     public void setCurrentCapacity(int currentCapacity) {
         if (currentCapacity > 0 && currentCapacity <= this.capacity) {
             this.currentCapacity = currentCapacity;
@@ -217,7 +170,6 @@ public class Gym implements Serializable {
         Gym gym = (Gym) o;
 
         return id.equals(gym.id);
-
     }
 
     @Override

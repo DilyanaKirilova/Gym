@@ -83,4 +83,21 @@ public class FitnessManager {
             this.exercises.add(exercise);
         }
     }
+
+    public List<Gym> getGyms(Exercise exercise) {
+
+        List<Gym> gyms = new ArrayList<>();
+        for(Gym gym : allGyms.get(true)){
+            if(gym.getExercises().contains(exercise)){
+                gyms.add(gym);
+            }
+        }
+
+        for(Gym gym : allGyms.get(false)){
+            if(gym.getExercises().contains(exercise)){
+                gyms.add(gym);
+            }
+        }
+        return gyms;
+    }
 }

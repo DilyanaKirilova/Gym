@@ -19,12 +19,12 @@ import android.widget.ImageButton;
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.fragments.MainFragment;
 
-import model.gyms.Gym;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private CheckBox chbFavourite;
+    private  ImageButton ibAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,13 @@ public class MainActivity extends AppCompatActivity
         toolbar.setSubtitle("");
         setSupportActionBar(toolbar);
 
+        MainFragment mainFragment = new MainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("recycler_view", "all");
+        mainFragment.setArguments(bundle);
+        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+        f.replace(R.id.fragmentContainer, mainFragment).commit();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -44,7 +51,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ImageButton ibAdd = (ImageButton) findViewById(R.id.ibAdd);
+        ibAdd = (ImageButton) findViewById(R.id.ibAdd);
         chbFavourite = (CheckBox) findViewById(R.id.chbFavourite);
 
         ibAdd.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +61,6 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("replace_fragment", "add_gym");
                 startActivity(intent);
-
             }
         });
 
@@ -69,19 +75,14 @@ public class MainActivity extends AppCompatActivity
                     bundle.putString("recycler_view", "favourites");
                 } else {
                     chbFavourite.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
+                    bundle.putString("recycler_view", "all");
                 }
 
-                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
                 mainFragment.setArguments(bundle);
+                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
                 f.replace(R.id.fragmentContainer, mainFragment).commit();
             }
         });
-
-
-       //replace with fragment with fitness list
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new MainFragment()).commit();
     }
 
     @Override
@@ -100,18 +101,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         MainFragment mainFragment = new MainFragment();
         Bundle bundle = new Bundle();
 
         if (id == R.id.nav_gyms) {
-            bundle.putString("replace_fragment", "gym");
+            chbFavourite.setVisibility(View.VISIBLE);
+            ibAdd.setVisibility(View.VISIBLE);
+            bundle.putString("recycler_view", "all");
         } else if (id == R.id.nav_exercises) {
-            bundle.putString("replace_fragment", "exercises");
+            chbFavourite.setVisibility(View.GONE);
+            ibAdd.setVisibility(View.GONE);
+            bundle.putString("recycler_view", "exercises");
         }
-
         mainFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragmentContainer, mainFragment).commit();
+        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+        f.replace(R.id.fragmentContainer, mainFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

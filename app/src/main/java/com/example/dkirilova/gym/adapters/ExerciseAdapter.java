@@ -25,15 +25,12 @@ import model.gyms.Exercise;
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
     private List<Exercise> exercises;
-    private ExerciseAdapterController adapterController;
+    private IExerciseAdapterController adapterController;
 
-
-
-    public ExerciseAdapter(ExerciseAdapterController adapterController, List<Exercise> exercises){
+    public ExerciseAdapter(IExerciseAdapterController adapterController, List<Exercise> exercises){
         this.adapterController = adapterController;
         this.exercises = exercises;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -103,7 +100,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         }
     }
 
-    public interface ExerciseAdapterController{
+    public interface IExerciseAdapterController{
 
         void editOrDelete(Exercise exercise);
         void openDetails(Exercise exercise);

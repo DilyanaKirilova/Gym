@@ -51,7 +51,6 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
             public void onClick(View v) {
                 takePhoto();
                 dismiss();
-
             }
         });
 

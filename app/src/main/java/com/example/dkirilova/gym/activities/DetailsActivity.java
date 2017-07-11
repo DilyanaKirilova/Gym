@@ -25,9 +25,19 @@ public class DetailsActivity extends AppCompatActivity {
         ImageButton ibEdit = (ImageButton) findViewById(R.id.ibEdit);
         ImageButton ibBack = (ImageButton) findViewById(R.id.ibBack);
 
-        if (getIntent().getStringExtra("replace_fragment") != null) {
+        if (getIntent() != null) {
 
-            if (getIntent().getStringExtra("replace_fragment").equals("exercise_details")) {
+            if (getIntent().getStringExtra("replace_fragment") != null) {
+                if (getIntent().getStringExtra("replace_fragment").equals("add_gym")) {
+                    ibEdit.setVisibility(View.GONE);
+                    bundle.putString("edit", "edit");
+                    GymDetailsFragment g = new GymDetailsFragment();
+                    g.setArguments(bundle);
+                    FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+                    f.replace(R.id.fragmentContainerDetails, g).commit();
+                }
+            } else if (getIntent().getBundleExtra("exercise") != null) {
+                ibEdit.setVisibility(View.GONE);
                 bundle = getIntent().getBundleExtra("exercise");
                 Exercise exercise = (Exercise) bundle.getSerializable("exercise");
                 bundle.putSerializable("exercise", exercise);
@@ -36,36 +46,33 @@ public class DetailsActivity extends AppCompatActivity {
                 exerciseDetailsFragment.setArguments(bundle);
                 FragmentTransaction f = getSupportFragmentManager().beginTransaction();
                 f.replace(R.id.fragmentContainerDetails, exerciseDetailsFragment).commit();
-            } else if (getIntent().getStringExtra("replace_fragment").equals("add_gym")) {
-                ibEdit.setVisibility(View.GONE);
-            } else if (getIntent().getStringExtra("replace_fragment").equals("gym_details")) {
+            } else if (getIntent().getBundleExtra("gym") != null) {
                 bundle = getIntent().getBundleExtra("gym");
                 Gym gym = (Gym) bundle.getSerializable("gym");
                 bundle.putSerializable("gym", gym);
+
+                GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+                gymDetailsFragment.setArguments(bundle);
+                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+                f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
             }
-
-            GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-            gymDetailsFragment.setArguments(bundle);
-            FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-            f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
-
-            ibEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-                    bundle.putString("edit", "gym");
-                    gymDetailsFragment.setArguments(bundle);
-                    FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-                    f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
-                }
-            });
-
-            ibBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
         }
+        ibEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+                bundle.putString("edit", "gym");
+                gymDetailsFragment.setArguments(bundle);
+                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
+                f.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
+            }
+        });
+
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }

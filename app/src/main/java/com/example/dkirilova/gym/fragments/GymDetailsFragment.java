@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
-import com.example.dkirilova.gym.adapters.GymAdapter;
 
 import java.util.ArrayList;
 
@@ -33,7 +31,7 @@ import model.validators.Validator;
 import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
-public class GymDetailsFragment extends Fragment implements ExerciseAdapter.ExerciseAdapterController{
+public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExerciseAdapterController {
 
     private EditText etName;
     private EditText etAddress;
@@ -93,11 +91,10 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.Exer
         ibAddExercise.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
 
-
         if (getArguments() != null) {
             Bundle bundle = getArguments();
 
-            if (bundle.getSerializable("gym") != null || bundle.getString("edit") != null) {
+            if (bundle.getSerializable("gym") != null) {
                 gym = (Gym) getArguments().getSerializable("gym");
                 setGymData();
                 newExercises.addAll(gym.getExercises());
@@ -109,17 +106,15 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.Exer
                 btnSaveChanges.setVisibility(View.VISIBLE);
             }
 
-            if(bundle.getSerializable("array") != null){
+            if (bundle.getSerializable("array") != null) {
                 newExercises = (ArrayList<Exercise>) bundle.getSerializable("array");
             }
 
-            if (getActivity() instanceof AppCompatActivity) {
-
-                ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, newExercises);
-                rvExercises.setAdapter(exerciseAdapter);
-                rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            }
         }
+
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, newExercises);
+        rvExercises.setAdapter(exerciseAdapter);
+        rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         ivSelectPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,19 +197,22 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.Exer
 
     private void setGymData() {
         //todo set image
-        etName.setText(gym.getName());
-        etAddress.setText(gym.getAddress());
-        etDescription.setText(gym.getDescription());
-        etCapacity.setText(String.valueOf(gym.getCapacity()));
-        etCurrentCapacity.setText(String.valueOf(gym.getCurrentCapacity()));
-        etContactEmail.setText(gym.getContactEmail());
-        etContactAddress.setText(gym.getContactAddress());
-        etContactPhoneNum.setText(gym.getContactPhoneNumber());
-        etContactPerson.setText(gym.getContactPerson());
+        if (gym != null) {
+            etName.setText(gym.getName());
+            etAddress.setText(gym.getAddress());
+            etDescription.setText(gym.getDescription());
+            etCapacity.setText(String.valueOf(gym.getCapacity()));
+            etCurrentCapacity.setText(String.valueOf(gym.getCurrentCapacity()));
+            etContactEmail.setText(gym.getContactEmail());
+            etContactAddress.setText(gym.getContactAddress());
+            etContactPhoneNum.setText(gym.getContactPhoneNumber());
+            etContactPerson.setText(gym.getContactPerson());
+        }
     }
 
     @Override
-    public void editOrDelete(Exercise exercise) {}
+    public void editOrDelete(Exercise exercise) {
+    }
 
     @Override
     public void openDetails(Exercise exercise) {
@@ -222,7 +220,6 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.Exer
         bundle.putSerializable("exercise", exercise);
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         intent.putExtra("exercise", bundle);
-        intent.putExtra("replace_fragment", "exercise_details");
         startActivity(intent);
     }
 }
