@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.DetailsActivity;
@@ -62,6 +63,7 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
 
     @Override
     public void openDetails(Gym gym) {
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("gym", gym);
         Intent intent = new Intent(getActivity(), DetailsActivity.class);

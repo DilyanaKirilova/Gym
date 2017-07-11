@@ -47,6 +47,7 @@ public class Gym implements Serializable {
         }
     }
 
+    /*
     public void setLatitude(double latitude) {
         if (String.valueOf(latitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
             this.latitude = latitude;
@@ -57,6 +58,14 @@ public class Gym implements Serializable {
         if (String.valueOf(longitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
             this.longitude = longitude;
         }
+    }*/
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+            this.longitude = longitude;
     }
 
     public void setId(String id) {
@@ -189,5 +198,13 @@ public class Gym implements Serializable {
 
     public void removeExercise(Exercise exercise) {
         this.exercises.remove(exercise);
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 }

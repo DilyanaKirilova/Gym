@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 
@@ -51,6 +52,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         holder.tvGymName.setText(gym.getName());
         holder.tvGymAddress.setText(gym.getAddress());
         setImage(holder.ivImage, gym.getImage());
+
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

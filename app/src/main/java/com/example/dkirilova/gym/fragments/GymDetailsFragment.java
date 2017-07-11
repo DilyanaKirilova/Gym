@@ -1,6 +1,8 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.example.dkirilova.gym.R;
@@ -20,8 +23,13 @@ import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import model.HttpDataHandler;
 import model.gyms.Contact;
 import model.gyms.Exercise;
 import model.gyms.Gym;
@@ -186,6 +194,8 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
 
                     FitnessManager.getInstance().add(gym);
 
+                    new getCoordinates().execute(address.replace(" ", " "));
+
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                 }
@@ -221,5 +231,59 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         intent.putExtra("exercise", bundle);
         startActivity(intent);
+    }
+
+    private class getCoordinates extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setMessage("Please wait...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String response;
+            try {
+                String address = params[0];
+                HttpDataHandler httpDataHandler = new HttpDataHandler();
+                String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", address);
+                response = httpDataHandler.getHttpData(url);
+                return response;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
+                        getJSONObject("location").get("lat").toString();
+                String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
+                        getJSONObject("location").get("lng").toString();
+
+                gym.setLatitude(Double.valueOf(lat));
+                gym.setLongitude(Double.valueOf(lng));
+
+                Toast.makeText(getActivity(), "Coordinates long  " + lng + "   lat  " + lat, Toast.LENGTH_LONG).show();
+
+                if(progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

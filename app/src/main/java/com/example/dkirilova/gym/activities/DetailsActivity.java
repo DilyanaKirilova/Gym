@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 
+import model.HttpDataHandler;
 import model.gyms.Exercise;
 import model.gyms.Gym;
 
