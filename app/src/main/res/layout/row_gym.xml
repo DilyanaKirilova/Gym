@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginLeft="10dp"
-            android:button="@mipmap/ic_favorite_border_black_24dp"/>
+            android:button="@drawable/ic_favorite_border_black_24dp"/>
 
     </LinearLayout>
 

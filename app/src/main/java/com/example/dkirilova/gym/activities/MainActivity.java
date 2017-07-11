@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity
                 MainFragment mainFragment = new MainFragment();
                 Bundle bundle = new Bundle();
                 if (isChecked) {
-                    chbFavourite.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+                    chbFavourite.setButtonDrawable(R.drawable.ic_favorite_black_24dp);
                     bundle.putString("recycler_view", "favourites");
                 } else {
-                    chbFavourite.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
+                    chbFavourite.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
                     bundle.putString("recycler_view", "all");
                 }
 

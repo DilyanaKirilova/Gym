@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:button="@mipmap/ic_favorite_border_black_24dp"/>
+                android:button="@drawable/ic_favorite_border_black_24dp"/>
 
             <ImageButton
                 android:id="@+id/ibAdd"
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@mipmap/ic_add_circle_black_24dp"/>
+                android:background="@drawable/ic_add_circle_black_24dp"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

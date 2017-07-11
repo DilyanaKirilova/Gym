@@ -72,12 +72,12 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+                    holder.chbFavouriteGym.setButtonDrawable(R.drawable.ic_favorite_black_24dp);
                     FitnessManager.getInstance().delete(gym);
                     gym.setIsFavourite(true);
                     FitnessManager.getInstance().add(gym);
                 } else {
-                    holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
+                    holder.chbFavouriteGym.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
                     FitnessManager.getInstance().delete(gym);
                     gym.setIsFavourite(false);
                     FitnessManager.getInstance().add(gym);
@@ -86,9 +86,9 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         });
 
         if (gym.isFavourite()) {
-            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_black_24dp);
+            holder.chbFavouriteGym.setButtonDrawable(R.drawable.ic_favorite_black_24dp);
         } else {
-            holder.chbFavouriteGym.setButtonDrawable(R.mipmap.ic_favorite_border_black_24dp);
+            holder.chbFavouriteGym.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
         }
     }
 
