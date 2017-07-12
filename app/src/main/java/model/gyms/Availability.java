@@ -2,37 +2,34 @@ package model.gyms;
 
 import java.io.Serializable;
 
-import model.validators.Validator;
 
 /**
  * Created by dkirilova on 7/5/2017.
  */
 
 public class Availability implements Serializable{
+
+    public enum DayOfWeek {
+        SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
+        THURSDAY, FRIDAY, SATURDAY
+    }
+
     private int startTime;
     private int duration;
-    private String dayName;
+    private DayOfWeek dayOfWeek;
 
-    public Availability(int startTime, int duration, String dayName) {
 
-        if(startTime >= 0 && startTime < 2400){
-            this.startTime = startTime;
-        }
+    public Availability(int startTime, int duration, DayOfWeek dayOfWeek) {
 
-        if(duration > 0 && duration < 2400) {
-            this.duration = duration;
-        }
-
-        if( Validator.isValidString(dayName)){
-            this.dayName = dayName;
-        }
+        setStartTime(startTime);
+        setDuration(duration);
+        setDayOfWeek(dayOfWeek);
     }
 
     public void setStartTime(int startTime) {
-        if(startTime >= 0 && startTime < 2400){
             this.startTime = startTime;
-        }
     }
+
 
     public void setDuration(int duration) {
         if(duration > 0 && duration < 2400) {
@@ -40,9 +37,9 @@ public class Availability implements Serializable{
         }
     }
 
-    public void setDayName(String dayName) {
-        if( Validator.isValidString(dayName)){
-            this.dayName = dayName;
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        if(dayOfWeek != null){
+            this.dayOfWeek = dayOfWeek;
         }
     }
 }
