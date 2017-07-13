@@ -15,9 +15,21 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.fragments.MainFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import model.gyms.Gym;
+import model.singleton.FitnessManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import services.ApiService;
+import services.RetrofitClient;
 
 
 public class MainActivity extends AppCompatActivity
@@ -25,11 +37,33 @@ public class MainActivity extends AppCompatActivity
 
     private CheckBox chbFavourite;
     private  ImageButton ibAdd;
+    private ApiService apiService;
+    private List<Gym> gyms = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        apiService = RetrofitClient.getRetrofitClient().create(ApiService.class);
+        Call<List<Gym>> call = apiService.getGyms();
+        call.enqueue(new Callback<List<Gym>>() {
+            @Override
+            public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
+                if(response.isSuccessful()) {
+                    gyms = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Gym>> call, Throwable t) {
+
+                Toast.makeText(MainActivity.this, "onFailure", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        FitnessManager.getInstance().addGyms(gyms);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setSubtitle("");

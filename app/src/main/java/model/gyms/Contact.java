@@ -1,5 +1,7 @@
 package model.gyms;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 import model.validators.Validator;
@@ -12,6 +14,7 @@ public class Contact implements Serializable{
     private String address;
     private String phoneNumber;
     private String email;
+    @SerializedName("contactPerson")
     private String person;
 
     public Contact(String address, String phoneNumber, String email, String contactPerson) {

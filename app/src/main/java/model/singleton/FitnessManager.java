@@ -100,4 +100,9 @@ public class FitnessManager {
         }
         return gyms;
     }
+
+    public void addGyms(List<Gym> gyms) {
+
+        this.allGyms.get(false).addAll(gyms);
+    }
 }

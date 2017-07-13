@@ -1,5 +1,7 @@
 package model.gyms;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -11,6 +13,7 @@ import model.validators.Validator;
 
 public class Exercise implements Serializable{
     private int duration;
+    @SerializedName("experienceLevel")
     private int level;
     private String image;
     private String id;

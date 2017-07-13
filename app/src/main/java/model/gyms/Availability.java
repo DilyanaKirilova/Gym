@@ -1,5 +1,7 @@
 package model.gyms;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 
@@ -16,10 +18,12 @@ public class Availability implements Serializable{
 
     private int startTime;
     private int duration;
-    private DayOfWeek dayOfWeek;
+    @SerializedName("dayName")
+    private String dayOfWeek;
+    //private DayOfWeek dayOfWeek;
 
 
-    public Availability(int startTime, int duration, DayOfWeek dayOfWeek) {
+    public Availability(int startTime, int duration, String dayOfWeek) {
 
         setStartTime(startTime);
         setDuration(duration);
@@ -37,7 +41,7 @@ public class Availability implements Serializable{
         }
     }
 
-    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+    public void setDayOfWeek(String  dayOfWeek) {
         if(dayOfWeek != null){
             this.dayOfWeek = dayOfWeek;
         }
