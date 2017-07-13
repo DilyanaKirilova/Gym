@@ -78,7 +78,7 @@ public class FitnessManager {
         return favourites;
     }
 
-    public void addExercises(ArrayList<Exercise> exercises) {
+    public void addExercises(List<Exercise> exercises) {
         for (Exercise exercise : exercises) {
             this.exercises.add(exercise);
         }

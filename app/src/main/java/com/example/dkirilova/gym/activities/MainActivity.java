@@ -20,11 +20,6 @@ import android.widget.ImageButton;
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.fragments.MainFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import model.gyms.Gym;
-import services.ApiService;
 
 
 

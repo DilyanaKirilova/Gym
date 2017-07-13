@@ -120,7 +120,8 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
 
         }
 
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, newExercises);
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this);
+        exerciseAdapter.setExercises(FitnessManager.getInstance().getAllExercises());
         rvExercises.setAdapter(exerciseAdapter);
         rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 

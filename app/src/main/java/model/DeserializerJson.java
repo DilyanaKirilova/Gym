@@ -20,13 +20,17 @@ import static android.R.id.list;
  * Created by dkirilova on 7/13/2017.
  */
 
-public class GymDeserializer<T> implements JsonDeserializer<List<T>>{
+public class DeserializerJson<T> implements JsonDeserializer<List<T>>{
 
+    private String value;
+    public DeserializerJson(String value){
+        this.value = value;
+    }
     @Override
     public List<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         Type type = ((ParameterizedType) typeOfT).getActualTypeArguments()[0];
         List<T> list = new ArrayList<>();
-        JsonElement jsonElement = json.getAsJsonObject().get("Gyms");
+        JsonElement jsonElement = json.getAsJsonObject().get(value);
         JsonArray jsonArray = jsonElement.getAsJsonArray();
         for (int i = 0; i < jsonArray.size(); i++) {
             T el = (T) new Gson().fromJson(jsonArray.get(i), type);

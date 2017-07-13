@@ -27,9 +27,8 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     private List<Exercise> exercises;
     private IExerciseAdapterController adapterController;
 
-    public ExerciseAdapter(IExerciseAdapterController adapterController, List<Exercise> exercises){
+    public ExerciseAdapter(IExerciseAdapterController adapterController){
         this.adapterController = adapterController;
-        this.exercises = exercises;
     }
 
     @Override
@@ -67,6 +66,11 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     public int getItemCount() {
 
         return (exercises != null? exercises.size(): 0);
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

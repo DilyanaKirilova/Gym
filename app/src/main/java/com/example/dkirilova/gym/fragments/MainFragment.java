@@ -14,10 +14,13 @@ import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import model.DeserializerJson;
 import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
@@ -31,6 +34,8 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
 
 
     private GymAdapter gymsAdapter;
+    GymAdapter favouritesGymsAdapter;
+    ExerciseAdapter exerciseAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,12 +44,14 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
         gymsAdapter = new GymAdapter(this);
-        GymAdapter favouritesGymsAdapter = new GymAdapter(this);
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, FitnessManager.getInstance().getAllExercises());
+        favouritesGymsAdapter = new GymAdapter(this);
+        exerciseAdapter = new ExerciseAdapter(this);
 
-        ApiService apiService = RetrofitClient.getRetrofitClient().create(ApiService.class);
-        Call<List<Gym>> call = apiService.getGyms();
-        call.enqueue(new Callback<List<Gym>>() {
+        Gson gsonGym = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Gym>>("Gyms")).create();
+        ApiService apiServiceGym = RetrofitClient.getRetrofitClient(gsonGym).create(ApiService.class);
+        Call<List<Gym>> callGym = apiServiceGym.getGyms();
+
+        callGym.enqueue(new Callback<List<Gym>>() {
             @Override
             public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
                 if(response.isSuccessful()) {
@@ -57,6 +64,27 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
             @Override
             public void onFailure(Call<List<Gym>> call, Throwable t) {}
         });
+
+        Gson gsonExercise = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Exercise>>("Exercises")).create();
+        ApiService apiServiceExercise = RetrofitClient.getRetrofitClient(gsonExercise).create(ApiService.class);
+        Call<List<Exercise>> callExercise = apiServiceExercise.getExercises();
+
+        callExercise.enqueue(new Callback<List<Exercise>>() {
+            @Override
+            public void onResponse(Call<List<Exercise>> call, Response<List<Exercise>> response) {
+                List<Exercise> exercises = new ArrayList<Exercise>();
+                exercises = response.body();
+                FitnessManager.getInstance().addExercises(exercises);
+                notifyExerciseAdapter(exercises);
+            }
+
+            @Override
+            public void onFailure(Call<List<Exercise>> call, Throwable t) {
+
+            }
+        });
+
+
 
         if (getArguments() != null) {
             if (getArguments().getString("recycler_view") != null) {
@@ -115,5 +143,9 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
 
     public void notifyGymAdapter(List<Gym> gyms) {
         gymsAdapter.setGyms(gyms);
+    }
+
+    public void notifyExerciseAdapter(List<Exercise> exercises){
+        exerciseAdapter.setExercises(exercises);
     }
 }
