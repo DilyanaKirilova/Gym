@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.DetailsActivity;
@@ -16,13 +15,22 @@ import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteGymFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.gyms.Exercise;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import services.ApiService;
+import services.RetrofitClient;
 
-public class MainFragment extends Fragment implements GymAdapter.IGymAdapterController, ExerciseAdapter.IExerciseAdapterController {
+public class MainFragment extends Fragment implements GymAdapter.IGymAdapterController, ExerciseAdapter.IExerciseAdapterController{
 
 
+    private GymAdapter gymsAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -30,9 +38,25 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        GymAdapter gymsAdapter = new GymAdapter(this, FitnessManager.getInstance().getAllGyms());
-        GymAdapter favouritesGymsAdapter = new GymAdapter(this, FitnessManager.getInstance().getFavourites());
+        gymsAdapter = new GymAdapter(this);
+        GymAdapter favouritesGymsAdapter = new GymAdapter(this);
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this, FitnessManager.getInstance().getAllExercises());
+
+        ApiService apiService = RetrofitClient.getRetrofitClient().create(ApiService.class);
+        Call<List<Gym>> call = apiService.getGyms();
+        call.enqueue(new Callback<List<Gym>>() {
+            @Override
+            public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
+                if(response.isSuccessful()) {
+                    List<Gym> gyms = new ArrayList<>();
+                    gyms = response.body();
+                    FitnessManager.getInstance().addGyms(gyms);
+                    notifyGymAdapter(gyms);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Gym>> call, Throwable t) {}
+        });
 
         if (getArguments() != null) {
             if (getArguments().getString("recycler_view") != null) {
@@ -87,5 +111,9 @@ public class MainFragment extends Fragment implements GymAdapter.IGymAdapterCont
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         intent.putExtra("exercise", bundle);
         startActivity(intent);
+    }
+
+    public void notifyGymAdapter(List<Gym> gyms) {
+        gymsAdapter.setGyms(gyms);
     }
 }

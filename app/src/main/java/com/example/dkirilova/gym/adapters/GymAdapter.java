@@ -31,9 +31,8 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
     private IGymAdapterController adapterController;
     private List<Gym> gyms;
 
-    public GymAdapter(IGymAdapterController adapterController, List<Gym> gyms) {
+    public GymAdapter(IGymAdapterController adapterController) {
         this.adapterController = adapterController;
-        this.gyms = gyms;
     }
 
     @Override
@@ -134,6 +133,11 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             image.setImageBitmap(myBitmap);
         }
+    }
+
+    public void setGyms(List<Gym> gyms) {
+        this.gyms = gyms;
+        notifyDataSetChanged();
     }
 
     public interface IGymAdapterController {

@@ -1,5 +1,12 @@
 package services;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
+
+import model.GymDeserializer;
+import model.gyms.Gym;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,10 +28,13 @@ public class RetrofitClient {
         okhttp3.OkHttpClient client = builder.build();
         if (retrofit == null) {
 
+            Gson gson = new GsonBuilder().registerTypeAdapter(Gym.class, new GymDeserializer<Gym>()).
+                    registerTypeAdapter(List.class, new GymDeserializer<List<Gym>>()).create();
+
             retrofit = new Retrofit.Builder()
                     .client(client)
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;

@@ -82,7 +82,8 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
             }
         }
 
-        GymAdapter gymAdapter = new GymAdapter(this, FitnessManager.getInstance().getGyms(exercise));
+        GymAdapter gymAdapter = new GymAdapter(this);
+        gymAdapter.setGyms(FitnessManager.getInstance().getGyms(exercise));
         recyclerView.setAdapter(gymAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 

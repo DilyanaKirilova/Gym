@@ -103,6 +103,6 @@ public class FitnessManager {
 
     public void addGyms(List<Gym> gyms) {
 
-        this.allGyms.get(false).addAll(gyms);
+       this.allGyms.get(false).addAll(gyms);
     }
 }
