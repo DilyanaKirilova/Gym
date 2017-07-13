@@ -108,7 +108,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         !Validator.isEmptyField(String.valueOf(duration), etDuration) &&
                         !Validator.isEmptyField(instructor, etInstructor)) {
 
-                    Exercise exercise = new Exercise(duration, level, name, instructor, description);
+                    Exercise exercise = new Exercise(null, duration, level, name, instructor, description);
 
                     ArrayList<Exercise> exercises = new ArrayList<Exercise>();
                     if (getArguments() != null) {

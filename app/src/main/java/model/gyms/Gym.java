@@ -1,5 +1,7 @@
 package model.gyms;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,21 +18,46 @@ public class Gym implements Serializable {
     private boolean isFavourite;
     private String image;
 
+    @SerializedName("currentCapacity")
     private int currentCapacity;
+    @SerializedName("capacity")
     private int capacity;
+    @SerializedName("latitude")
     private double latitude;
+    @SerializedName("longitude")
     private double longitude;
+    @SerializedName("id")
     private String id;
+    @SerializedName("name")
     private String name;
+    @SerializedName("address")
     private String address;
+    @SerializedName("description")
     private String description;
+    @SerializedName("contact")
     private Contact contact;
+    @SerializedName("availabilities")
     private ArrayList<Availability> availabilities;
+    @SerializedName("exercises")
     private ArrayList<Exercise> exercises;
 
     public Gym() {
         this.id = UUID.randomUUID().toString();
         this.exercises = new ArrayList<>();
+    }
+
+    public Gym(int currentCapacity, int capacity, double latitude, double longitude, String id, String name, String address, String description, Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
+        setId(id);
+        setName(name);
+        setCurrentCapacity(currentCapacity);
+        setCapacity(capacity);
+        setLatitude(latitude);
+        setLongitude(longitude);
+        setAddress(address);
+        setDescription(description);
+        setContact(contact);
+        setAvailabilities(availabilities);
+        setExercises(exercises);
     }
 
     ;
@@ -71,6 +98,8 @@ public class Gym implements Serializable {
     public void setId(String id) {
         if (Validator.isValidString(id)) {
             this.id = id;
+        }else{
+            this.id = UUID.randomUUID().toString();
         }
     }
 

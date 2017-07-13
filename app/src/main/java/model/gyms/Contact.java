@@ -11,46 +11,42 @@ import model.validators.Validator;
  */
 
 public class Contact implements Serializable{
+    @SerializedName("address")
     private String address;
+    @SerializedName("phoneNumber")
     private String phoneNumber;
+    @SerializedName("email")
     private String email;
     @SerializedName("contactPerson")
     private String person;
 
     public Contact(String address, String phoneNumber, String email, String contactPerson) {
-        if(Validator.isValidString(address)){
-            this.address = address;
-        }
-        if(Validator.isValidString(phoneNumber)){
-            this.phoneNumber = phoneNumber;
-        }
-        if(Validator.isValidString(email)){
-            this.email = email;
-        }
-        if(Validator.isValidString(contactPerson)) {
-            this.person = contactPerson;
-        }
+
+        setAddress(address);
+        setPhoneNumber(phoneNumber);
+        setEmail(email);
+        setContactPerson(contactPerson);
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         if(Validator.isValidString(address)){
             this.address = address;
         }
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    private void setPhoneNumber(String phoneNumber) {
         if(Validator.isValidString(phoneNumber)){
             this.phoneNumber = phoneNumber;
         }
     }
 
-    public void setEmail(String email) {
+    private void setEmail(String email) {
         if(Validator.isValidString(email)){
             this.email = email;
         }
     }
 
-    public void setContactPerson(String contactPerson) {
+    private void setContactPerson(String contactPerson) {
         if(Validator.isValidString(contactPerson)){
             this.person = contactPerson;
         }

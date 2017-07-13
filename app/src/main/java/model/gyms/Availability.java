@@ -15,8 +15,9 @@ public class Availability implements Serializable{
         SUNDAY, MONDAY, TUESDAY, WEDNESDAY,
         THURSDAY, FRIDAY, SATURDAY
     }
-
+    @SerializedName("startTime")
     private int startTime;
+    @SerializedName("duration")
     private int duration;
     @SerializedName("dayName")
     private String dayOfWeek;
@@ -41,7 +42,7 @@ public class Availability implements Serializable{
         }
     }
 
-    public void setDayOfWeek(String  dayOfWeek) {
+    public void setDayOfWeek(String dayOfWeek) {
         if(dayOfWeek != null){
             this.dayOfWeek = dayOfWeek;
         }

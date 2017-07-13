@@ -12,35 +12,28 @@ import model.validators.Validator;
  */
 
 public class Exercise implements Serializable{
+    @SerializedName("duration")
     private int duration;
     @SerializedName("experienceLevel")
     private int level;
     private String image;
+    @SerializedName("id")
     private String id;
+    @SerializedName("name")
     private String name;
+    @SerializedName("instructor")
     private String instructor;
+    @SerializedName("description")
     private String description;
 
-    public Exercise(int duration, int experienceLevel, String name, String instructor, String description) {
+    public Exercise(String id, int duration, int experienceLevel, String name, String instructor, String description) {
 
-        this.id = UUID.randomUUID().toString();
-
-        if(duration > 0){
-            this.duration = duration;
-        }
-        if(experienceLevel > 0 && experienceLevel <= 10) {
-            this.level = experienceLevel;
-        }
-        if(Validator.isValidString(name)) {
-            this.name = name;
-        }
-        if(Validator.isValidString(instructor)) {
-            this.instructor = instructor;
-        }
-
-        if(Validator.isValidString(description)) {
-            this.description = description;
-        }
+        setId(id);
+        setDuration(duration);
+        setExperienceLevel(experienceLevel);
+        setName(name);
+        setInstructor(instructor);
+        setDescription(description);
     }
 
     public void setDuration(int duration) {
@@ -58,6 +51,8 @@ public class Exercise implements Serializable{
     public void setId(String id) {
         if(Validator.isValidString(id)){
             this.id = id;
+        }else {
+            this.id = UUID.randomUUID().toString();
         }
     }
 
