@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.activities.DetailsActivity;
+import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                     bundle.putSerializable("array", exercises);
                     gymDetailsFragment.setArguments(bundle);
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainerDetails, gymDetailsFragment).commit();
+                    fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
                 }
             }
         });
@@ -151,7 +151,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     public void openDetails(Gym gym) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("gym", gym);
-        Intent intent = new Intent(getActivity(), DetailsActivity.class);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra("gym", bundle);
         getActivity().startActivity(intent);
     }

@@ -1,12 +1,12 @@
 package com.example.dkirilova.gym.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,36 +16,93 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
-
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.fragments.MainFragment;
+import com.example.dkirilova.gym.fragments.GymDetailsFragment;
+import com.example.dkirilova.gym.fragments.GymFragment;
+import com.example.dkirilova.gym.fragments.ExerciseFragment;
 
-
+import static android.support.design.widget.NavigationView.*;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements OnNavigationItemSelectedListener {
 
-    private CheckBox chbFavourite;
-    private  ImageButton ibAdd;
-    private MainFragment mainFragment = new MainFragment();
+    // fragments
+    private GymFragment gymFragment = new GymFragment();
+    private ExerciseFragment exerciseFragment = new ExerciseFragment();
+    private GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+
+    // interface
+    IGymController iGymController = (IGymController) gymFragment;
+    IExerciseController iExerciseController = (IExerciseController) exerciseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("recycler_view", "all");
-        mainFragment.setArguments(bundle);
         FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        f.replace(R.id.fragmentContainer, mainFragment).commit();
+        f.replace(R.id.fragmentContainer, gymFragment).commit();
 
+        final CheckBox chbFavourites = (CheckBox) findViewById(R.id.chbFavourite);
+        final ImageButton ibBack = (ImageButton) findViewById(R.id.ibBack);
+        final ImageButton ibEdit = (ImageButton) findViewById(R.id.ibEdit);
+        final ImageButton ibAdd = (ImageButton) findViewById(R.id.ibAdd);
+
+        // onClickListener toolbar icon (add)
+        ibAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iGymController.addGym();
+            }
+        });
+
+
+        // onClickListener toolbar icon (edit)
+        ibEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            // todo
+            }
+        });
+
+        // onClickListener toolbar icon (back)
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // onClickListener toolbar icon (favourites)
+        chbFavourites.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    chbFavourites.setButtonDrawable(R.drawable.ic_favorite_black_24dp);
+                    iGymController.showFavouritesGyms();
+                } else {
+                    chbFavourites.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
+                    iGymController.showAllGyms();
+                }
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setSubtitle("");
         setSupportActionBar(toolbar);
+
+
+        toolbar.setOnMenuItemClickListener(
+                new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Handle menu item click event
+                        return true;
+                    }
+                });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -55,39 +112,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        ibAdd = (ImageButton) findViewById(R.id.ibAdd);
-        chbFavourite = (CheckBox) findViewById(R.id.chbFavourite);
-
-        ibAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtra("replace_fragment", "add_gym");
-                startActivity(intent);
-            }
-        });
-
-        chbFavourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                MainFragment mainFragment = new MainFragment();
-                Bundle bundle = new Bundle();
-                if (isChecked) {
-                    chbFavourite.setButtonDrawable(R.drawable.ic_favorite_black_24dp);
-                    bundle.putString("recycler_view", "favourites");
-                } else {
-                    chbFavourite.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
-                    bundle.putString("recycler_view", "all");
-                }
-
-                mainFragment.setArguments(bundle);
-                FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-                f.replace(R.id.fragmentContainer, mainFragment).commit();
-            }
-        });
     }
 
     @Override
@@ -103,27 +127,29 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        MainFragment mainFragment = new MainFragment();
-        Bundle bundle = new Bundle();
-
         if (id == R.id.nav_gyms) {
-            chbFavourite.setVisibility(View.VISIBLE);
-            ibAdd.setVisibility(View.VISIBLE);
-            bundle.putString("recycler_view", "all");
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragmentContainer, gymFragment).commit();
         } else if (id == R.id.nav_exercises) {
-            chbFavourite.setVisibility(View.GONE);
-            ibAdd.setVisibility(View.GONE);
-            bundle.putString("recycler_view", "exercises");
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragmentContainer, exerciseFragment).commit();
         }
-        mainFragment.setArguments(bundle);
-        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        f.replace(R.id.fragmentContainer, mainFragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public interface IExerciseController {
+
+        void showExercises();
+    }
+
+    public interface IGymController {
+        void showFavouritesGyms();
+        void showAllGyms();
+        void addGym();
     }
 }

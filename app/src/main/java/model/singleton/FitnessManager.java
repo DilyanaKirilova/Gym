@@ -78,10 +78,8 @@ public class FitnessManager {
         return favourites;
     }
 
-    public void addExercises(List<Exercise> exercises) {
-        for (Exercise exercise : exercises) {
-            this.exercises.add(exercise);
-        }
+    public void addExercises(List<Exercise> e) {
+        this.exercises.addAll(e);
     }
 
     public List<Gym> getGyms(Exercise exercise) {

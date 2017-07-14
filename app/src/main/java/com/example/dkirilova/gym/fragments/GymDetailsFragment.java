@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.activities.DetailsActivity;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
@@ -39,7 +38,8 @@ import model.validators.Validator;
 import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
-public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExerciseAdapterController {
+public class GymDetailsFragment extends Fragment
+        implements ExerciseAdapter.IExerciseAdapterController{
 
     private EditText etName;
     private EditText etAddress;
@@ -63,16 +63,20 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
     private ArrayList<Exercise> newExercises = new ArrayList<>();
     private ArrayList<EditText> eTexts = new ArrayList<>();
 
+
     private Gym gym;
+    private ImageButton ibAddExercise;
+    private Button btnSaveChanges;
+    ImageView ivSelectPhoto;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
-        ImageView ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
-        Button btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
-        ImageButton ibAddExercise = (ImageButton) root.findViewById(R.id.ibAddExercise);
+        ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
+        btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
+        ibAddExercise = (ImageButton) root.findViewById(R.id.ibAddExercise);
         etName = (EditText) root.findViewById(R.id.etDGName);
         etAddress = (EditText) root.findViewById(R.id.etDGAddress);
         etCapacity = (EditText) root.findViewById(R.id.etCapacity);
@@ -94,10 +98,12 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
         eTexts.add(etCapacity);
         eTexts.add(etCurrentCapacity);
 
+
         changeStateEditable(eTexts, false);
         ivSelectPhoto.setVisibility(View.GONE);
         ibAddExercise.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
+
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
@@ -142,7 +148,7 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
                 exerciseDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-                fragmentTransaction.replace(R.id.fragmentContainerDetails, exerciseDetailsFragment).commit();
+                fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
             }
         });
 
@@ -227,11 +233,7 @@ public class GymDetailsFragment extends Fragment implements ExerciseAdapter.IExe
 
     @Override
     public void openDetails(Exercise exercise) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        Intent intent = new Intent(getActivity(), DetailsActivity.class);
-        intent.putExtra("exercise", bundle);
-        startActivity(intent);
+
     }
 
     private class getCoordinates extends AsyncTask<String, Void, String> {
