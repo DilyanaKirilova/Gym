@@ -1,10 +1,7 @@
 package com.example.dkirilova.gym.fragments;
 
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.activities.MainActivity;
 
 import model.gyms.Availability;
 import model.gyms.Gym;
@@ -78,12 +76,9 @@ public class AvailabilityDetailsFragment extends Fragment {
                     }
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("gym", gym);
-                GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-                gymDetailsFragment.setArguments(bundle);
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+                if(getActivity() instanceof MainActivity){
+                    ((MainActivity)getActivity()).openGymDetailsFragment(gym);
+                }
             }
         });
 

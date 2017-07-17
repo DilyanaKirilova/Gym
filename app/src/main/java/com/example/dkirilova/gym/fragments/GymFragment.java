@@ -3,7 +3,6 @@ package com.example.dkirilova.gym.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.GymAdapter;
-import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,9 +44,7 @@ implements GymAdapter.IGymAdapterController,
         if(FitnessManager.getInstance().getAllGyms().size() == 0) {
             loadGyms();
         }
-
         showAllGyms();
-
         return root;
     }
 
@@ -79,21 +75,16 @@ implements GymAdapter.IGymAdapterController,
 
     @Override
     public void editOrDelete(Gym gym) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
-        editOrDeleteFragment.setArguments(bundle);
-        editOrDeleteFragment.show(getActivity().getSupportFragmentManager(), "fragment");
+        if(getActivity() instanceof MainActivity){
+            ((MainActivity)getActivity()).openEditOrDeleteFragment(gym);
+        }
     }
 
     @Override
     public void openDetails(Gym gym) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-        gymDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+        if(getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        }
     }
 
     public void notifyGymAdapter(List<Gym> gyms) {
@@ -109,8 +100,9 @@ implements GymAdapter.IGymAdapterController,
 
     @Override
     public void addGym() {
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new GymDetailsFragment()).commit();
+        if(getActivity() instanceof MainActivity){
+            ((MainActivity)getActivity()).openGymDetailsFragment();
+        }
     }
 
     @Override

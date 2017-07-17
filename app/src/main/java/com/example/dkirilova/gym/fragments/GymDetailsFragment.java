@@ -1,11 +1,9 @@
 package com.example.dkirilova.gym.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -106,6 +104,7 @@ public class GymDetailsFragment extends Fragment
         changeStateEditable(eTexts, false);
         ivSelectPhoto.setVisibility(View.GONE);
         ibAddExercise.setVisibility(View.GONE);
+        ibAddAvailability.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
 
 
@@ -126,6 +125,7 @@ public class GymDetailsFragment extends Fragment
                 changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 ibAddExercise.setVisibility(View.VISIBLE);
+                ibAddAvailability.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
             }
 
@@ -150,26 +150,19 @@ public class GymDetailsFragment extends Fragment
         ibAddExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("edit", "exercise");
-                bundle.putSerializable("array", newExercises);
-                ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
-                exerciseDetailsFragment.setArguments(bundle);
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-                fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+                if(getActivity() instanceof MainActivity){
+                    ((MainActivity)getActivity()).openExerciseDetailsFragment(newExercises);
+                }
             }
         });
 
         ibAddAvailability.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("gym", gym);
-                AvailabilityDetailsFragment availabilityDetailsFragment = new AvailabilityDetailsFragment();
-                availabilityDetailsFragment.setArguments(bundle);
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, availabilityDetailsFragment).commit();
+                if(getActivity() instanceof MainActivity){
+                    ((MainActivity)getActivity()).openAvailabilitiesDetailsFragment(gym);
+                }
             }
         });
 
@@ -224,8 +217,9 @@ public class GymDetailsFragment extends Fragment
 
                     new getCoordinates().execute(address.replace(" ", " "));
 
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
+                    if(getActivity() instanceof MainActivity){
+                        ((MainActivity)getActivity()).openGymFragment();
+                    }
                 }
             }
         });

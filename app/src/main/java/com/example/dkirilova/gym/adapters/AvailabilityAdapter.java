@@ -21,9 +21,6 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
 
     private List<Availability> availabilities;
 
-    public AvailabilityAdapter(){
-
-    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());

@@ -1,9 +1,7 @@
 package com.example.dkirilova.gym.fragments;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
-import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -72,21 +69,16 @@ implements ExerciseAdapter.IExerciseAdapterController,
 
     @Override
     public void editOrDelete(Exercise exercise) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
-        editOrDeleteFragment.setArguments(bundle);
-        editOrDeleteFragment.show(getActivity().getSupportFragmentManager(), "fragment");
+        if(getActivity() instanceof MainActivity){
+            ((MainActivity)getActivity()).openEditOrDeleteFragment(exercise);
+        }
     }
 
     @Override
     public void openDetails(Exercise exercise) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
-        exerciseDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+        if(getActivity() instanceof MainActivity){
+            ((MainActivity)getActivity()).openExerciseDetailsFragment(exercise);
+        }
     }
 
     public void notifyExerciseAdapter(List<Exercise> exercises){

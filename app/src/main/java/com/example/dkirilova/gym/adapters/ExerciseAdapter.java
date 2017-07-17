@@ -42,9 +42,18 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final Exercise exercise = exercises.get(position);
+        int level = exercise.getLevel();
         holder.tvName.setText(exercise.getName());
-        holder.tvExperienceLevel.setText(String.valueOf(exercise.getLevel()));
+        holder.tvExperienceLevel.setText(String.valueOf(level));
         setImage(holder.ivImage, exercise.getImage());
+
+        if(level >= 1 && level <= 3){
+            holder.layout.setBackgroundResource(R.color.green);
+        } else if (level >= 4 && level <= 7){
+            holder.layout.setBackgroundResource(R.color.yellow);
+        }else if(level >= 8 && level <= 10){
+            holder.layout.setBackgroundResource(R.color.red);
+        }
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

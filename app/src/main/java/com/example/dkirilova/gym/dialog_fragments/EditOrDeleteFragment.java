@@ -2,16 +2,13 @@ package com.example.dkirilova.gym.dialog_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
-import com.example.dkirilova.gym.fragments.GymDetailsFragment;
-
+import com.example.dkirilova.gym.activities.MainActivity;
 
 import model.gyms.Exercise;
 import model.gyms.Gym;
@@ -47,15 +44,14 @@ public class EditOrDeleteFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
 
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 if (gym != null) {
-                    GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-                    gymDetailsFragment.setArguments(getArguments());
-                    fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+                    if(getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+                    }
                 } else if (exercise != null) {
-                    ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
-                    exerciseDetailsFragment.setArguments(getArguments());
-                    fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+                    if(getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).openExerciseDetailsFragment(exercise);
+                    }
                 }
 
                 dismiss();

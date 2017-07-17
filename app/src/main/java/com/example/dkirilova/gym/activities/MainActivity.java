@@ -17,20 +17,28 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 
 import com.example.dkirilova.gym.R;
+import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteFragment;
+import com.example.dkirilova.gym.fragments.AvailabilityDetailsFragment;
+import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymFragment;
 import com.example.dkirilova.gym.fragments.ExerciseFragment;
 
-import static android.support.design.widget.NavigationView.*;
+import java.util.ArrayList;
 
+import model.gyms.Exercise;
+import model.gyms.Gym;
 
 public class MainActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     // fragments
     private GymFragment gymFragment = new GymFragment();
     private ExerciseFragment exerciseFragment = new ExerciseFragment();
-    private GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+    private static ImageButton ibBack;
+    private static ImageButton ibEdit;
+    private static ImageButton ibAdd;
+    private static CheckBox chbFavourites;
 
     // interface
     IGymController iGymController = (IGymController) gymFragment;
@@ -41,13 +49,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentTransaction f = getSupportFragmentManager().beginTransaction();
-        f.replace(R.id.fragmentContainer, gymFragment).commit();
+        chbFavourites = (CheckBox) findViewById(R.id.chbFavourite);
+        ibBack = (ImageButton) findViewById(R.id.ibBack);
+        ibEdit = (ImageButton) findViewById(R.id.ibEdit);
+        ibAdd = (ImageButton) findViewById(R.id.ibAdd);
 
-        final CheckBox chbFavourites = (CheckBox) findViewById(R.id.chbFavourite);
-        final ImageButton ibBack = (ImageButton) findViewById(R.id.ibBack);
-        final ImageButton ibEdit = (ImageButton) findViewById(R.id.ibEdit);
-        final ImageButton ibAdd = (ImageButton) findViewById(R.id.ibAdd);
+        openGymFragment();
 
         // onClickListener toolbar icon (add)
         ibAdd.setOnClickListener(new View.OnClickListener() {
@@ -57,12 +64,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
         // onClickListener toolbar icon (edit)
         ibEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            // todo
+            //editGym();
             }
         });
 
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                openGymFragment();
             }
         });
 
@@ -89,20 +95,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setSubtitle("");
         setSupportActionBar(toolbar);
-
-
-        toolbar.setOnMenuItemClickListener(
-                new Toolbar.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Handle menu item click event
-                        return true;
-                    }
-                });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -130,11 +127,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_gyms) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentContainer, gymFragment).commit();
+            openGymFragment();
         } else if (id == R.id.nav_exercises) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentContainer, exerciseFragment).commit();
+            openExerciseFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -142,8 +137,133 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public interface IExerciseController {
+    public void openExerciseFragment() {
+        // change visibility
+        ibBack.setVisibility(View.GONE);
+        ibEdit.setVisibility(View.GONE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        // fragment transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, new ExerciseFragment()).commit();
+    }
 
+    public void openGymDetailsFragment(Gym gym) {
+        // change visibility
+        ibBack.setVisibility(View.VISIBLE);
+        ibEdit.setVisibility(View.VISIBLE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        // fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("gym", gym);
+        GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+        gymDetailsFragment.setArguments(bundle);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+    }
+
+    public void openExerciseDetailsFragment(Exercise exercise) {
+        // change visibility
+        ibBack.setVisibility(View.VISIBLE);
+        ibEdit.setVisibility(View.VISIBLE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        // fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("exercise", exercise);
+        ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
+        exerciseDetailsFragment.setArguments(bundle);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+    }
+
+    public void openEditOrDeleteFragment(Exercise exercise) {
+        // change visibility
+        ibBack.setVisibility(View.GONE);
+        ibEdit.setVisibility(View.GONE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        // fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("exercise", exercise);
+        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
+        editOrDeleteFragment.setArguments(bundle);
+        editOrDeleteFragment.show(getSupportFragmentManager(), "fragment");
+    }
+
+    public void openAvailabilitiesDetailsFragment(Gym gym) {
+        // change visibility
+        ibBack.setVisibility(View.GONE);
+        ibEdit.setVisibility(View.GONE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        //  fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("gym", gym);
+        AvailabilityDetailsFragment availabilityDetailsFragment = new AvailabilityDetailsFragment();
+        availabilityDetailsFragment.setArguments(bundle);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, availabilityDetailsFragment).commit();
+    }
+
+    public void openExerciseDetailsFragment(ArrayList<Exercise> newExercises) {
+        // change visibility
+        ibBack.setVisibility(View.VISIBLE);
+        ibEdit.setVisibility(View.VISIBLE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        //  fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putString("edit", "exercise");
+        bundle.putSerializable("array", newExercises);
+        ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
+        exerciseDetailsFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+    }
+
+    public void openEditOrDeleteFragment(Gym gym) {
+        // change visibility
+        ibBack.setVisibility(View.GONE);
+        ibEdit.setVisibility(View.GONE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        //  fragment transaction
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("gym", gym);
+        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
+        editOrDeleteFragment.setArguments(bundle);
+        editOrDeleteFragment.show(getSupportFragmentManager(), "fragment");
+    }
+
+    public void openGymDetailsFragment(ArrayList<Exercise> exercises) {
+        // change visibility
+        ibBack.setVisibility(View.VISIBLE);
+        ibEdit.setVisibility(View.VISIBLE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        //  fragment transaction
+        GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("array", exercises);
+        gymDetailsFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+    }
+
+    public void openGymDetailsFragment() {
+        // change visibility
+        ibBack.setVisibility(View.VISIBLE);
+        ibEdit.setVisibility(View.VISIBLE);
+        ibAdd.setVisibility(View.GONE);
+        chbFavourites.setVisibility(View.GONE);
+        //  fragment transaction
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, new GymDetailsFragment()).commit();
+    }
+
+    public interface IExerciseController {
         void showExercises();
     }
 
@@ -151,5 +271,16 @@ public class MainActivity extends AppCompatActivity
         void showFavouritesGyms();
         void showAllGyms();
         void addGym();
+    }
+
+    public void openGymFragment(){
+        // change visibility
+        ibBack.setVisibility(View.GONE);
+        ibEdit.setVisibility(View.GONE);
+        ibAdd.setVisibility(View.VISIBLE);
+        chbFavourites.setVisibility(View.VISIBLE);
+        //  fragment transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, new GymFragment()).commit();
     }
 }

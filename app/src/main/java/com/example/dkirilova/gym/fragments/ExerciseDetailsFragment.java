@@ -1,9 +1,7 @@
 package com.example.dkirilova.gym.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -121,12 +119,10 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                             gym.setExercise(exercise);
                         }
                     }
-                    GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("array", exercises);
-                    gymDetailsFragment.setArguments(bundle);
-                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+                    if(getActivity() instanceof MainActivity) {
+                        ((MainActivity)getActivity()).openGymDetailsFragment(exercises);
+                    }
+
                 }
             }
         });
@@ -152,10 +148,8 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
 
     @Override
     public void openDetails(Gym gym) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra("gym", bundle);
-        getActivity().startActivity(intent);
+        if(getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        }
     }
 }
