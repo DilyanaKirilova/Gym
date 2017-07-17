@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.dkirilova.gym.fragments.AvailabilityDetailsFragment">
+
+    <EditText
+        android:id="@+id/etADDayName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/day_name"/>
+
+    <EditText
+        android:id="@+id/etADStartTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/start_time"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/etADDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/duration"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/btnADSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"/>
+</LinearLayout>

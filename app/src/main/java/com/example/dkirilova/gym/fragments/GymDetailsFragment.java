@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
+import com.example.dkirilova.gym.adapters.AvailabilityAdapter;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
 import org.json.JSONArray;
@@ -66,6 +67,7 @@ public class GymDetailsFragment extends Fragment
 
     private Gym gym;
     private ImageButton ibAddExercise;
+    private ImageButton ibAddAvailability;
     private Button btnSaveChanges;
     ImageView ivSelectPhoto;
 
@@ -77,6 +79,7 @@ public class GymDetailsFragment extends Fragment
         ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
         btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
         ibAddExercise = (ImageButton) root.findViewById(R.id.ibAddExercise);
+        ibAddAvailability = (ImageButton) root.findViewById(R.id.ibAddAvailability);
         etName = (EditText) root.findViewById(R.id.etDGName);
         etAddress = (EditText) root.findViewById(R.id.etDGAddress);
         etCapacity = (EditText) root.findViewById(R.id.etCapacity);
@@ -87,6 +90,7 @@ public class GymDetailsFragment extends Fragment
         etContactPhoneNum = (EditText) root.findViewById(R.id.etCPhone);
         etDescription = (EditText) root.findViewById(R.id.etDGDescription);
         RecyclerView rvExercises = (RecyclerView) root.findViewById(R.id.rvExercises);
+        RecyclerView rvAvailabilities = (RecyclerView) root.findViewById(R.id.rvAvailabilities);
 
         eTexts.add(etName);
         eTexts.add(etAddress);
@@ -112,6 +116,11 @@ public class GymDetailsFragment extends Fragment
                 gym = (Gym) getArguments().getSerializable("gym");
                 setGymData();
                 newExercises.addAll(gym.getExercises());
+
+                final AvailabilityAdapter availabilityAdapter = new AvailabilityAdapter();
+                availabilityAdapter.setAvailabilities(gym.getAvailabilities());
+                rvAvailabilities.setAdapter(availabilityAdapter);
+                rvAvailabilities.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             }
             if (bundle.getSerializable("gym") == null || bundle.getString("edit") != null) {
                 changeStateEditable(eTexts, true);
@@ -149,6 +158,18 @@ public class GymDetailsFragment extends Fragment
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
                 fragmentTransaction.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+            }
+        });
+
+        ibAddAvailability.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("gym", gym);
+                AvailabilityDetailsFragment availabilityDetailsFragment = new AvailabilityDetailsFragment();
+                availabilityDetailsFragment.setArguments(bundle);
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.fragmentContainer, availabilityDetailsFragment).commit();
             }
         });
 

@@ -26,4 +26,7 @@
     <string name="take_new_photo" />
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="exercises">Exercises</string>
+    <string name="availabilities">Availabilities</string>
+    <string name="start_time">Start time</string>
+    <string name="day_name">Day name</string>
 </resources>

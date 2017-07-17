@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -254,5 +255,26 @@ public class Gym implements Serializable {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public List<Availability> getAvailabilities() {
+
+        return Collections.unmodifiableList(availabilities);
+    }
+
+    public void addAvailability(Availability availability) {
+        if(availability != null) {
+
+            if(this.availabilities.contains(availability)) {
+                this.availabilities.remove(availability);
+            }
+            this.availabilities.add(availability);
+        }
+    }
+
+    public void setExercise(Exercise exercise) {
+        if(exercise != null) {
+            this.exercises.add(exercise);
+        }
     }
 }

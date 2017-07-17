@@ -21,7 +21,6 @@ public class Availability implements Serializable{
     private int duration;
     @SerializedName("dayName")
     private String dayOfWeek;
-    //private DayOfWeek dayOfWeek;
 
 
     public Availability(int startTime, int duration, String dayOfWeek) {
@@ -44,7 +43,41 @@ public class Availability implements Serializable{
 
     public void setDayOfWeek(String dayOfWeek) {
         if(dayOfWeek != null){
-            this.dayOfWeek = dayOfWeek;
+            dayOfWeek = dayOfWeek.toUpperCase();
+            for(DayOfWeek dayName : DayOfWeek.values()){
+                if(dayOfWeek.equals(dayName.toString())){
+                    this.dayOfWeek = dayOfWeek;
+                    break;
+                }
+            }
         }
+    }
+
+    public String getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Availability that = (Availability) o;
+
+        return getDayOfWeek().equals(that.getDayOfWeek());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getDayOfWeek().hashCode();
     }
 }

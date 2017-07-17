@@ -87,6 +87,26 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="20sp"
+            android:text="@string/availabilities"/>
+
+        <ImageButton
+            android:id="@+id/ibAddAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_add_circle_outline_black_24dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvAvailabilities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="20sp"
             android:text="@string/exercises"/>
 
         <ImageButton

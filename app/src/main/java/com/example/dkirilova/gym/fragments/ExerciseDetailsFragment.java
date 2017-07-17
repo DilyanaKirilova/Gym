@@ -110,12 +110,15 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         !Validator.isEmptyField(instructor, etInstructor)) {
 
                     Exercise exercise = new Exercise(null, duration, level, name, instructor, description);
-
-                    ArrayList<Exercise> exercises = new ArrayList<Exercise>();
+                    ArrayList<Exercise> exercises = new ArrayList<>();
                     if (getArguments() != null) {
                         if (getArguments().getSerializable("array") != null) {
                             exercises = (ArrayList<Exercise>) getArguments().getSerializable("array");
                             exercises.add(exercise);
+                        }
+                        if(getArguments().getSerializable("gym") != null) {
+                            Gym gym = (Gym) getArguments().getSerializable("gym");
+                            gym.setExercise(exercise);
                         }
                     }
                     GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
