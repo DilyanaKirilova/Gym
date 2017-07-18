@@ -28,8 +28,8 @@ import services.ApiService;
 import services.RetrofitClient;
 
 public class GymFragment extends Fragment
-implements GymAdapter.IGymAdapterController,
-        MainActivity.IGymController{
+        implements GymAdapter.IGymAdapterController,
+        MainActivity.IGymController {
 
     private RecyclerView recyclerView;
     private GymAdapter gymsAdapter = new GymAdapter(this);
@@ -41,14 +41,14 @@ implements GymAdapter.IGymAdapterController,
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        if(FitnessManager.getInstance().getAllGyms().size() == 0) {
+        if (FitnessManager.getInstance().getAllGyms().size() == 0) {
             loadGyms();
         }
         showAllGyms();
         return root;
     }
 
-    private void loadGyms(){
+    private void loadGyms() {
         Gson gsonGym = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Gym>>("Gyms")).create();
         ApiService apiServiceGym = RetrofitClient.getRetrofitClient(gsonGym).create(ApiService.class);
         Call<List<Gym>> callGym = apiServiceGym.getGyms();
@@ -57,7 +57,7 @@ implements GymAdapter.IGymAdapterController,
             @Override
             public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
                 if (response.isSuccessful()) {
-                    List<Gym> gyms = new ArrayList<>();
+                    List<Gym> gyms;
                     gyms = response.body();
                     for (Gym gym : gyms) {
                         FitnessManager.getInstance().addExercises(gym.getExercises());
@@ -66,6 +66,7 @@ implements GymAdapter.IGymAdapterController,
                     notifyGymAdapter(gyms);
                 }
             }
+
             @Override
             public void onFailure(Call<List<Gym>> call, Throwable t) {
             }
@@ -74,14 +75,14 @@ implements GymAdapter.IGymAdapterController,
 
     @Override
     public void editOrDelete(Gym gym) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openEditOrDeleteFragment(gym);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).openEditOrDeleteFragment(gym);
         }
     }
 
     @Override
     public void openDetails(Gym gym) {
-        if(getActivity() instanceof MainActivity) {
+        if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).openGymDetailsFragment(gym);
         }
     }
@@ -91,7 +92,7 @@ implements GymAdapter.IGymAdapterController,
     }
 
     @Override
-    public void showAllGyms(){
+    public void showAllGyms() {
         notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
         recyclerView.setAdapter(gymsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
