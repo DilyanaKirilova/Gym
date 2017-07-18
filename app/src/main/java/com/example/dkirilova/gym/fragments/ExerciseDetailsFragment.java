@@ -68,22 +68,21 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         if (getArguments() != null) {
 
             Bundle bundle = getArguments();
+            if (bundle.getSerializable("exercise") != null) {
+                exercise = (Exercise) getArguments().getSerializable("exercise");
+                setExerciseData();
 
-            if (bundle.getString("edit") != null || getActivity().getIntent().getStringExtra("edit") != null) {
+                GymAdapter gymAdapter = new GymAdapter(this);
+                gymAdapter.setGyms(FitnessManager.getInstance().getGyms(exercise));
+                recyclerView.setAdapter(gymAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+            } else if(bundle.getSerializable("gym") != null){
                 changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
             }
-            if (bundle.getSerializable("exercise") != null) {
-                exercise = (Exercise) getArguments().getSerializable("exercise");
-                setExerciseData();
-            }
         }
-
-        GymAdapter gymAdapter = new GymAdapter(this);
-        gymAdapter.setGyms(FitnessManager.getInstance().getGyms(exercise));
-        recyclerView.setAdapter(gymAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         btnSaveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,26 +106,23 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         !Validator.isEmptyField(String.valueOf(duration), etDuration) &&
                         !Validator.isEmptyField(instructor, etInstructor)) {
 
+                    Gym gym = new Gym();
                     Exercise exercise = new Exercise(null, duration, level, name, instructor, description);
-                    ArrayList<Exercise> exercises = new ArrayList<>();
                     if (getArguments() != null) {
-                        if (getArguments().getSerializable("array") != null) {
-                            exercises = (ArrayList<Exercise>) getArguments().getSerializable("array");
-                            exercises.add(exercise);
+                        Bundle bundle = getArguments();
+                        if (bundle.getSerializable("gym") != null) {
+                            gym = ((Gym)bundle.getSerializable("gym"));
                         }
-                        if(getArguments().getSerializable("gym") != null) {
-                            Gym gym = (Gym) getArguments().getSerializable("gym");
-                            gym.setExercise(exercise);
-                        }
-                    }
-                    if(getActivity() instanceof MainActivity) {
-                        ((MainActivity)getActivity()).openGymDetailsFragment(exercises);
                     }
 
+                    gym.setExercise(exercise);
+                    FitnessManager.getInstance().add(exercise);
+                    if(getActivity() instanceof MainActivity) {
+                        ((MainActivity)getActivity()).openGymDetailsFragment(gym);
+                    }
                 }
             }
         });
-
         return root;
     }
 
@@ -143,7 +139,6 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     // empty
     @Override
     public void editOrDelete(Gym gym) {
-
     }
 
     @Override

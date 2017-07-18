@@ -39,9 +39,17 @@ public class AvailabilityDetailsFragment extends Fragment {
 
                 if(!etStartTime.getText().toString().trim().isEmpty()) {
                     startTime = Integer.valueOf(etStartTime.getText().toString());
+                } else {
+                    etStartTime.setError("..");
+                    etStartTime.requestFocus();
+                    return;
                 }
                 if(!etDuration.getText().toString().trim().isEmpty()) {
                     duration = Integer.valueOf(etDuration.getText().toString());
+                }else {
+                    etDuration.setError("..");
+                    etDuration.requestFocus();
+                    return;
                 }
 
                 boolean isValidDayName = false;
@@ -70,11 +78,9 @@ public class AvailabilityDetailsFragment extends Fragment {
                 if (getArguments() != null) {
                     if (getArguments().getSerializable("gym") != null) {
                         gym = (Gym) getArguments().getSerializable("gym");
-                        if (gym != null) {
-                            gym.addAvailability(availability);
-                        }
                     }
                 }
+                gym.addAvailability(availability);
 
                 if(getActivity() instanceof MainActivity){
                     ((MainActivity)getActivity()).openGymDetailsFragment(gym);

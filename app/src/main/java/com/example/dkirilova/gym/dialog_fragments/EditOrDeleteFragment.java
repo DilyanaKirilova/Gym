@@ -2,6 +2,7 @@ package com.example.dkirilova.gym.dialog_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,9 +66,15 @@ public class EditOrDeleteFragment extends DialogFragment{
                 // todo notifyDataSetChanged
                 if (gym != null) {
                     FitnessManager.getInstance().delete(gym);
+                    if(getActivity() instanceof MainActivity){
+                        ((MainActivity)getActivity()).openGymFragment();
+                    }
 
                 } else if (exercise != null) {
                     FitnessManager.getInstance().delete(exercise);
+                    if(getActivity() instanceof MainActivity){
+                        ((MainActivity)getActivity()).openExerciseFragment();
+                    }
                 }
                 dismiss();
             }

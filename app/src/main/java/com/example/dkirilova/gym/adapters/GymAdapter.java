@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 
@@ -50,6 +51,15 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         holder.tvGymName.setText(gym.getName());
         holder.tvGymAddress.setText(gym.getAddress());
         setImage(holder.ivImage, gym.getImage());
+
+        int weekHoursSum = 168;
+        if(gym.getAvailabilityHours() <= 0.3 * weekHoursSum){
+            holder.layout.setBackgroundResource(R.color.red);
+        }else if(gym.getAvailabilityHours() <= 0.6 * weekHoursSum){
+            holder.layout.setBackgroundResource(R.color.yellow);
+        }else{
+            holder.layout.setBackgroundResource(R.color.green);
+        }
 
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {

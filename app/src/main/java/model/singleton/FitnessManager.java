@@ -46,7 +46,7 @@ public class FitnessManager {
 
 
     public void delete(Gym gym) {
-        if (gym != null && allGyms.containsKey(gym.isFavourite())) {
+        if (gym != null && gym.getName() != null && allGyms.containsKey(gym.isFavourite())) {
             this.allGyms.get(gym.isFavourite()).remove(gym);
         }
     }

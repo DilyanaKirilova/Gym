@@ -66,7 +66,6 @@ implements GymAdapter.IGymAdapterController,
                     notifyGymAdapter(gyms);
                 }
             }
-
             @Override
             public void onFailure(Call<List<Gym>> call, Throwable t) {
             }
@@ -96,13 +95,6 @@ implements GymAdapter.IGymAdapterController,
         notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
         recyclerView.setAdapter(gymsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-    }
-
-    @Override
-    public void addGym() {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openGymDetailsFragment();
-        }
     }
 
     @Override

@@ -45,6 +45,7 @@ public class Gym implements Serializable {
     public Gym() {
         this.id = UUID.randomUUID().toString();
         this.exercises = new ArrayList<>();
+        this.availabilities = new ArrayList<>();
     }
 
     public Gym(int currentCapacity, int capacity, double latitude, double longitude, String id, String name, String address, String description, Contact contact, ArrayList<Availability> availabilities, ArrayList<Exercise> exercises) {
@@ -57,8 +58,16 @@ public class Gym implements Serializable {
         setAddress(address);
         setDescription(description);
         setContact(contact);
-        setAvailabilities(availabilities);
-        setExercises(exercises);
+        if (availabilities != null) {
+            this.availabilities = availabilities;
+        } else {
+            this.availabilities = new ArrayList<>();
+        }
+        if (exercises != null) {
+            this.exercises = exercises;
+        } else {
+            this.exercises = new ArrayList<>();
+        }
     }
 
     ;
@@ -93,13 +102,13 @@ public class Gym implements Serializable {
     }
 
     public void setLongitude(double longitude) {
-            this.longitude = longitude;
+        this.longitude = longitude;
     }
 
     public void setId(String id) {
         if (Validator.isValidString(id)) {
             this.id = id;
-        }else{
+        } else {
             this.id = UUID.randomUUID().toString();
         }
     }
@@ -173,7 +182,7 @@ public class Gym implements Serializable {
         return currentCapacity;
     }
 
-    public String getContactEmail(){
+    public String getContactEmail() {
         if (this.contact != null) {
             return contact.getEmail();
         }
@@ -240,7 +249,7 @@ public class Gym implements Serializable {
     }
 
     public void setExercises(ArrayList<Exercise> exercises) {
-        if(exercises != null) {
+        if (exercises != null) {
             this.exercises = exercises;
         }
     }
@@ -259,13 +268,16 @@ public class Gym implements Serializable {
 
     public List<Availability> getAvailabilities() {
 
-        return Collections.unmodifiableList(availabilities);
+        if (availabilities != null) {
+            return Collections.unmodifiableList(availabilities);
+        }
+        return null;
     }
 
     public void addAvailability(Availability availability) {
-        if(availability != null) {
+        if (availability != null) {
 
-            if(this.availabilities.contains(availability)) {
+            if (this.availabilities.contains(availability)) {
                 this.availabilities.remove(availability);
             }
             this.availabilities.add(availability);
@@ -273,8 +285,16 @@ public class Gym implements Serializable {
     }
 
     public void setExercise(Exercise exercise) {
-        if(exercise != null) {
+        if (exercise != null) {
             this.exercises.add(exercise);
         }
+    }
+
+    public int getAvailabilityHours() {
+        int sum = 0;
+        for (Availability availability : this.availabilities) {
+            sum += availability.getDuration();
+        }
+        return sum;
     }
 }

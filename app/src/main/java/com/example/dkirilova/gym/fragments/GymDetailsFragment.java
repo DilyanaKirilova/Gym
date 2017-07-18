@@ -1,6 +1,5 @@
 package com.example.dkirilova.gym.fragments;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,8 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
@@ -28,6 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import model.HttpDataHandler;
+import model.gyms.Availability;
 import model.gyms.Contact;
 import model.gyms.Exercise;
 import model.gyms.Gym;
@@ -38,7 +36,8 @@ import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
 public class GymDetailsFragment extends Fragment
-        implements ExerciseAdapter.IExerciseAdapterController{
+        implements ExerciseAdapter.IExerciseAdapterController,
+        MainActivity.IGymDetailsController {
 
     private EditText etName;
     private EditText etAddress;
@@ -59,9 +58,7 @@ public class GymDetailsFragment extends Fragment
     private String contactEmail;
     private String contactPerson;
     private Contact contact;
-    private ArrayList<Exercise> newExercises = new ArrayList<>();
     private ArrayList<EditText> eTexts = new ArrayList<>();
-
 
     private Gym gym;
     private ImageButton ibAddExercise;
@@ -114,31 +111,18 @@ public class GymDetailsFragment extends Fragment
             if (bundle.getSerializable("gym") != null) {
                 gym = (Gym) getArguments().getSerializable("gym");
                 setGymData();
-                newExercises.addAll(gym.getExercises());
 
                 final AvailabilityAdapter availabilityAdapter = new AvailabilityAdapter();
                 availabilityAdapter.setAvailabilities(gym.getAvailabilities());
                 rvAvailabilities.setAdapter(availabilityAdapter);
                 rvAvailabilities.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            }
-            if (bundle.getSerializable("gym") == null || bundle.getString("edit") != null) {
-                changeStateEditable(eTexts, true);
-                ivSelectPhoto.setVisibility(View.VISIBLE);
-                ibAddExercise.setVisibility(View.VISIBLE);
-                ibAddAvailability.setVisibility(View.VISIBLE);
-                btnSaveChanges.setVisibility(View.VISIBLE);
-            }
 
-            if (bundle.getSerializable("array") != null) {
-                newExercises = (ArrayList<Exercise>) bundle.getSerializable("array");
+                ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this);
+                exerciseAdapter.setExercises(gym.getExercises());
+                rvExercises.setAdapter(exerciseAdapter);
+                rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             }
-
         }
-
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this);
-        exerciseAdapter.setExercises(FitnessManager.getInstance().getAllExercises());
-        rvExercises.setAdapter(exerciseAdapter);
-        rvExercises.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         ivSelectPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,8 +135,8 @@ public class GymDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
 
-                if(getActivity() instanceof MainActivity){
-                    ((MainActivity)getActivity()).openExerciseDetailsFragment(newExercises);
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).openExerciseDetailsFragment(gym);
                 }
             }
         });
@@ -160,8 +144,8 @@ public class GymDetailsFragment extends Fragment
         ibAddAvailability.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getActivity() instanceof MainActivity){
-                    ((MainActivity)getActivity()).openAvailabilitiesDetailsFragment(gym);
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).openAvailabilitiesDetailsFragment(gym);
                 }
             }
         });
@@ -170,11 +154,17 @@ public class GymDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
 
+
+                Gym newGym = new Gym();
+                ArrayList<Availability> availabilities = new ArrayList<>();
+                availabilities.addAll(gym.getAvailabilities());
+                newGym.setAvailabilities(availabilities);
+                ArrayList<Exercise> exercises = new ArrayList<>();
+                exercises.addAll(gym.getExercises());
+                newGym.setExercises(exercises);
+
                 FitnessManager.getInstance().delete(gym);
 
-                gym = new Gym();
-                gym.setExercises(newExercises);
-                FitnessManager.getInstance().addExercises(newExercises);
                 name = etName.getText().toString().trim();
                 address = etAddress.getText().toString().trim();
                 description = etDescription.getText().toString().trim();
@@ -206,19 +196,19 @@ public class GymDetailsFragment extends Fragment
                     //todo save the image here!
 
                     contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
-                    gym.setName(name);
-                    gym.setAddress(address);
-                    gym.setCapacity(capacity);
-                    gym.setCurrentCapacity(currentCapacity);
-                    gym.setDescription(description);
-                    gym.setContact(contact);
+                    newGym.setName(name);
+                    newGym.setAddress(address);
+                    newGym.setCapacity(capacity);
+                    newGym.setCurrentCapacity(currentCapacity);
+                    newGym.setDescription(description);
+                    newGym.setContact(contact);
 
-                    FitnessManager.getInstance().add(gym);
+                    FitnessManager.getInstance().add(newGym);
 
                     new getCoordinates().execute(address.replace(" ", " "));
 
-                    if(getActivity() instanceof MainActivity){
-                        ((MainActivity)getActivity()).openGymFragment();
+                    if (getActivity() instanceof MainActivity) {
+                        ((MainActivity) getActivity()).openGymFragment();
                     }
                 }
             }
@@ -230,6 +220,15 @@ public class GymDetailsFragment extends Fragment
     private void setGymData() {
         //todo set image
         if (gym != null) {
+
+            if (gym.getName() == null) {
+                changeStateEditable(eTexts, true);
+                ivSelectPhoto.setVisibility(View.VISIBLE);
+                ibAddExercise.setVisibility(View.VISIBLE);
+                ibAddAvailability.setVisibility(View.VISIBLE);
+                btnSaveChanges.setVisibility(View.VISIBLE);
+                return;
+            }
             etName.setText(gym.getName());
             etAddress.setText(gym.getAddress());
             etDescription.setText(gym.getDescription());
@@ -248,19 +247,23 @@ public class GymDetailsFragment extends Fragment
 
     @Override
     public void openDetails(Exercise exercise) {
+    }
 
+    @Override
+    public void editGym() {
+
+        changeStateEditable(eTexts, true);
+        ivSelectPhoto.setVisibility(View.VISIBLE);
+        ibAddExercise.setVisibility(View.VISIBLE);
+        ibAddAvailability.setVisibility(View.VISIBLE);
+        btnSaveChanges.setVisibility(View.VISIBLE);
     }
 
     private class getCoordinates extends AsyncTask<String, Void, String> {
 
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog.setMessage("Please wait...");
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.show();
         }
 
         @Override
@@ -286,19 +289,13 @@ public class GymDetailsFragment extends Fragment
 
             try {
                 JSONObject jsonObject = new JSONObject(s);
-                String lat = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
+                String lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
                         getJSONObject("location").get("lat").toString();
-                String lng = ((JSONArray)jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
+                String lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
                         getJSONObject("location").get("lng").toString();
 
                 gym.setLatitude(Double.valueOf(lat));
                 gym.setLongitude(Double.valueOf(lng));
-
-                Toast.makeText(getActivity(), "Coordinates long  " + lng + "   lat  " + lat, Toast.LENGTH_LONG).show();
-
-                if(progressDialog.isShowing()){
-                    progressDialog.dismiss();
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
