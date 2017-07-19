@@ -29,4 +29,6 @@
     <string name="availabilities">Availabilities</string>
     <string name="start_time">Start time</string>
     <string name="day_name">Day name</string>
+    <string name="google_maps_key">AIzaSyBkLPDXiV31-dzUww9meo8Hf5WXU61OMVs</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
