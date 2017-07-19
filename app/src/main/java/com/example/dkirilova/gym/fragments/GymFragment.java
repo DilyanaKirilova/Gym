@@ -28,23 +28,38 @@ import services.ApiService;
 import services.RetrofitClient;
 
 public class GymFragment extends Fragment
-        implements GymAdapter.IGymAdapterController,
-        MainActivity.IGymController {
+        implements GymAdapter.IGymAdapterController {
 
-    private RecyclerView recyclerView;
-    private GymAdapter gymsAdapter = new GymAdapter(this);
+    private GymAdapter gymsAdapter;
+    private IGymController iGymController = new IGymController() {
+        @Override
+        public void showFavouritesGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getFavourites());
+        }
+
+        @Override
+        public void showAllGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
+        }
+    };
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
-
-        if (FitnessManager.getInstance().getAllGyms().size() == 0) {
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+        gymsAdapter = new GymAdapter(this);
+        recyclerView.setAdapter(gymsAdapter);
+        List<Gym> allGyms = FitnessManager.getInstance().getAllGyms();
+        if (allGyms.size() == 0) {
             loadGyms();
+        } else {
+            notifyGymAdapter(allGyms);
         }
-        showAllGyms();
+        ((MainActivity) getActivity()).setiGymController(iGymController);
+
         return root;
     }
 
@@ -91,17 +106,10 @@ public class GymFragment extends Fragment
         gymsAdapter.setGyms(gyms);
     }
 
-    @Override
-    public void showAllGyms() {
-        notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
-        recyclerView.setAdapter(gymsAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+    public interface IGymController {
+        void showFavouritesGyms();
+
+        void showAllGyms();
     }
 
-    @Override
-    public void showFavouritesGyms() {
-        notifyGymAdapter(FitnessManager.getInstance().getFavourites());
-        recyclerView.setAdapter(gymsAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-    }
 }

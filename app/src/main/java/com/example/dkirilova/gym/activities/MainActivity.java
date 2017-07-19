@@ -33,12 +33,6 @@ public class MainActivity extends AppCompatActivity
         void showExercises();
     }
 
-    public interface IGymController {
-        void showFavouritesGyms();
-
-        void showAllGyms();
-    }
-
     public interface IGymDetailsController {
         void editGym();
     }
@@ -51,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     // interface
-    IGymController iGymController = (IGymController) gymFragment;
+    GymFragment.IGymController iGymController;
     IGymDetailsController iGymDetailsController = (IGymDetailsController) gymDetailsFragment;
     IExerciseController iExerciseController = (IExerciseController) exerciseFragment;
 
@@ -228,4 +222,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void setiGymController(GymFragment.IGymController iGymController) {
+        this.iGymController = iGymController;
+    }
 }
