@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_back"
-        android:icon="@drawable/ic_keyboard_backspace_black_24dp"
-        android:title="Add"
+        android:id="@+id/action_directions"
+        android:icon="@drawable/ic_directions_black_24dp"
+        android:title="Go to"
         app:showAsAction="always" />
 </menu>

@@ -154,7 +154,6 @@ public class GymDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
 
-
                 Gym newGym = new Gym();
                 ArrayList<Availability> availabilities = new ArrayList<>();
                 availabilities.addAll(gym.getAvailabilities());

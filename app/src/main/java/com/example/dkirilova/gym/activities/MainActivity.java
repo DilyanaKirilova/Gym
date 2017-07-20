@@ -3,6 +3,7 @@ package com.example.dkirilova.gym.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +25,8 @@ import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymFragment;
 import com.example.dkirilova.gym.fragments.GMapFragment;
 
+import java.io.Serializable;
+
 import model.gyms.Exercise;
 import model.gyms.Gym;
 
@@ -44,8 +47,13 @@ public class MainActivity extends AppCompatActivity
         void editGym();
     }
 
+    public interface IMapController {
+        void openGoogleMapsApp();
+    }
+
     // fragments
     private GymFragment gymFragment = new GymFragment();
+    private GMapFragment gMapFragment = new GMapFragment();
     private GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
     private ExerciseFragment exerciseFragment = new ExerciseFragment();
     private DrawerLayout drawer;
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     // interface
     IGymController iGymController = (IGymController) gymFragment;
+    IMapController iMapController = (IMapController) gMapFragment;
     IGymDetailsController iGymDetailsController = (IGymDetailsController) gymDetailsFragment;
     IExerciseController iExerciseController = (IExerciseController) exerciseFragment;
 
@@ -86,8 +95,10 @@ public class MainActivity extends AppCompatActivity
             } else if (R.id.action_edit == id) {
                 iGymDetailsController.editGym();
                 return true;
+            } else if(R.id.action_directions == id){
+                iMapController.openGoogleMapsApp();
+                return true;
             }
-
             return false;
         }
     };
@@ -122,63 +133,33 @@ public class MainActivity extends AppCompatActivity
 
     public void openExerciseFragment() {
         configureToolbar(true, View.NO_ID);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, new ExerciseFragment()).commit();
+        openFragment(new ExerciseDetailsFragment(), null, null);
     }
 
     public void openExerciseDetailsFragment(Gym gym) {
-
         configureToolbar(false, View.NO_ID);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
-        exerciseDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+        openFragment(new ExerciseDetailsFragment(), gym, "gym");
     }
 
     public void openGymDetailsFragment(Gym gym) {
-
         configureToolbar(false, R.menu.gym_details_menu);
-        // fragment transaction
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        gymDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, gymDetailsFragment).commit();
+        openFragment(new GymDetailsFragment(), gym, "gym");
     }
 
     public void openExerciseDetailsFragment(Exercise exercise) {
-
         configureToolbar(false, R.menu.gym_details_menu);
-        // fragment transaction
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        ExerciseDetailsFragment exerciseDetailsFragment = new ExerciseDetailsFragment();
-        exerciseDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, exerciseDetailsFragment).commit();
+        openFragment(new ExerciseDetailsFragment(), exercise, "exercise");
     }
 
     public void openAvailabilitiesDetailsFragment(Gym gym) {
-        //change lock mode
         configureToolbar(false, View.NO_ID);
-        //  fragment transaction
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        AvailabilityDetailsFragment availabilityDetailsFragment = new AvailabilityDetailsFragment();
-        availabilityDetailsFragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, availabilityDetailsFragment).commit();
+        openFragment(new AvailabilityDetailsFragment(), gym, "gym");
     }
 
     public void openGymFragment() {
-        //  fragment transaction
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, new GymFragment()).commit();
-        //change lock mode
         configureToolbar(true, R.menu.gym_list_menu);
         setFavouriteCheckState();
+        openFragment(new GymFragment(), null, null);
     }
 
     private void setFavouriteCheckState() {
@@ -215,6 +196,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void configureToolbar(final boolean isMainScreen, int toolbarMenu) {
+        if(toolbarMenu == View.NO_ID){
+            toolbar.getMenu().clear();
+            return;
+        }
         drawer.setDrawerLockMode(isMainScreen ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         toolbar.setNavigationIcon(isMainScreen ? R.drawable.ic_menu_black_24dp : R.drawable.ic_keyboard_backspace_black_24dp);
         toolbar.getMenu().clear();
@@ -232,8 +217,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void openMapFragment(){
-        configureToolbar(false, R.menu.empty_menu);
+        configureToolbar(true, R.menu.map_menu);
+        openFragment(gMapFragment, null, null);
+    }
+
+    public void openFragment(Fragment fragment, Serializable serializable, String str){
+
+        if(serializable != null && str != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(str, serializable);
+            fragment.setArguments(bundle);
+        }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragmentContainer, new GMapFragment()).commit();
+        ft.replace(R.id.fragmentContainer, fragment).commit();
     }
 }
