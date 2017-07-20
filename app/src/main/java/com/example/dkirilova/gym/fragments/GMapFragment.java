@@ -66,21 +66,20 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
+        gMap.clear();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 123);
-                return;
             }
-        }else {
-            trackLocation();
         }
-        addMarksForAllGyms(gMap);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        trackLocation();
+        addMarksForAllGyms(gMap);
 
         if (location == null) {
             Toast.makeText(getActivity(), "Location not found", Toast.LENGTH_SHORT).show();
@@ -115,7 +114,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
                         Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener = new LocationListener() {
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
@@ -147,6 +146,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
             public void onClick(DialogInterface dialog, int id) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
+                onMapReady(gMap);
             }
         });
 
