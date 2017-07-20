@@ -63,40 +63,63 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        addMarksForAllGyms(googleMap);
+
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
+            }else {
+                locationManager.requestLocationUpdates("gps", 5000, 0, locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        if (location != null) {
+                            latitudeUser = location.getLatitude();
+                            longitudeUser = location.getLongitude();
+                        }
+                    }
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Location services are off");
+                        builder.setMessage("Please turn on location services to continue");
+                        builder.setPositiveButton("Turn on location", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                            }
+                        });
+
+                        builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if(getActivity() instanceof MainActivity){
+                                    ((MainActivity)getActivity()).openGymFragment();
+                                }
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                });
             }
         }
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates("gps", 5000, 0, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if (location != null) {
-                    latitudeUser = location.getLatitude();
-                    longitudeUser = location.getLongitude();
-                }
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-               showAlertDialog();
-            }
-        });
-
-
-        addMarksForAllGyms(googleMap);
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location == null) {
             Toast.makeText(getActivity(), "Location not found", Toast.LENGTH_SHORT).show();
         } else {
@@ -122,29 +145,8 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
         });
     }
 
-    private void showAlertDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Location services are off");
-        builder.setMessage("Please turn on location services to continue");
-        builder.setPositiveButton("Turn on location", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        });
-
-        builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).openGymFragment();
-                }
-            }
-        });
-       builder.show();
-    }
-
     private void addMarksForAllGyms(GoogleMap googleMap) {
-        for (Gym gym : FitnessManager.getInstance().getAllGyms()) {
+        for(Gym gym : FitnessManager.getInstance().getAllGyms()){
             LatLng m = new LatLng(gym.getLatitude(), gym.getLongitude());
             googleMap.addMarker(new MarkerOptions().title(
                     "Name: " + gym.getName() + " Phone number: " +
@@ -155,12 +157,12 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
     @Override
     public void openGoogleMapsApp() {
 
-        if (latitudeUser == latitudeGym && longitudeUser == longitudeGym) {
+        if(latitudeUser == latitudeGym && longitudeUser == longitudeGym){
             Toast.makeText(getActivity(), "Please, choose different location from yours.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (latitudeGym == 0 && longitudeGym == 0) {
+        if(latitudeGym == 0 && longitudeGym == 0){
             Toast.makeText(getActivity(), "Please, choose destination point.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -170,7 +172,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
         try {
             getActivity().startActivity(intent);
-        } catch (ActivityNotFoundException e) {
+        }catch (ActivityNotFoundException e){
             String googleMapsAppPackageName = "com.google.android.apps.maps";
             Intent intentGoogleMaps = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + googleMapsAppPackageName));
             try {
