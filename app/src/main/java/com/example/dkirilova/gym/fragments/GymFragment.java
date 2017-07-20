@@ -52,6 +52,7 @@ public class GymFragment extends Fragment
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
         gymsAdapter = new GymAdapter(this);
         recyclerView.setAdapter(gymsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         List<Gym> allGyms = FitnessManager.getInstance().getAllGyms();
         if (allGyms.size() == 0) {
             loadGyms();
