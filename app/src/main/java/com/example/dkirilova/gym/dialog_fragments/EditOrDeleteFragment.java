@@ -2,7 +2,6 @@ package com.example.dkirilova.gym.dialog_fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ public class EditOrDeleteFragment extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View root = inflater.inflate(R.layout.fragment_edit_or_delete, container, false);
 
         Button btnEdit = (Button) root.findViewById(R.id.btnEdit);
@@ -54,7 +53,6 @@ public class EditOrDeleteFragment extends DialogFragment{
                         ((MainActivity) getActivity()).openExerciseDetailsFragment(exercise);
                     }
                 }
-
                 dismiss();
             }
         });
@@ -69,7 +67,6 @@ public class EditOrDeleteFragment extends DialogFragment{
                     if(getActivity() instanceof MainActivity){
                         ((MainActivity)getActivity()).openGymFragment();
                     }
-
                 } else if (exercise != null) {
                     FitnessManager.getInstance().delete(exercise);
                     if(getActivity() instanceof MainActivity){

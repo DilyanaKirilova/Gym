@@ -40,7 +40,6 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_take_or_select_photo, container, false);
 
         btnTakePhoto = (Button) root.findViewById(R.id.btnTakePhoto);
