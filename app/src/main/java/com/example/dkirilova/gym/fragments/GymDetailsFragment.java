@@ -1,8 +1,5 @@
 package com.example.dkirilova.gym.fragments;
 
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,15 +17,8 @@ import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.AvailabilityAdapter;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import model.HttpDataHandler;
 import model.gyms.Availability;
 import model.gyms.Contact;
 import model.gyms.Exercise;
@@ -40,8 +30,22 @@ import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
 public class GymDetailsFragment extends Fragment
-        implements ExerciseAdapter.IExerciseAdapterController,
-        MainActivity.IGymDetailsController {
+        implements ExerciseAdapter.IExerciseAdapterController{
+
+    public interface IGymDetailsController {
+        void editGym();
+    }
+
+    IGymDetailsController iGymDetailsController = new IGymDetailsController() {
+        @Override
+        public void editGym() {
+            changeStateEditable(eTexts, true);
+            ivSelectPhoto.setVisibility(View.VISIBLE);
+            ibAddExercise.setVisibility(View.VISIBLE);
+            ibAddAvailability.setVisibility(View.VISIBLE);
+            btnSaveChanges.setVisibility(View.VISIBLE);
+        }
+    };
 
     private EditText etName;
     private EditText etAddress;
@@ -74,6 +78,8 @@ public class GymDetailsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
+
+        ((MainActivity)getActivity()).setIGymDetailsController(iGymDetailsController);
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
         ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
@@ -250,15 +256,5 @@ public class GymDetailsFragment extends Fragment
 
     @Override
     public void openDetails(Exercise exercise) {
-    }
-
-    @Override
-    public void editGym() {
-
-        changeStateEditable(eTexts, true);
-        ivSelectPhoto.setVisibility(View.VISIBLE);
-        ibAddExercise.setVisibility(View.VISIBLE);
-        ibAddAvailability.setVisibility(View.VISIBLE);
-        btnSaveChanges.setVisibility(View.VISIBLE);
     }
 }

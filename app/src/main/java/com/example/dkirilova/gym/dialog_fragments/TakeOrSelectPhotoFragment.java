@@ -27,10 +27,7 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
-    private Button btnTakePhoto;
-    private Button btnSelectPhoto;
     private View root;
-    private Gym gym;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +39,8 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_take_or_select_photo, container, false);
 
-        btnTakePhoto = (Button) root.findViewById(R.id.btnTakePhoto);
-        btnSelectPhoto = (Button) root.findViewById((R.id.btnSelectPhoto));
+        Button btnTakePhoto = (Button) root.findViewById(R.id.btnTakePhoto);
+        Button btnSelectPhoto = (Button) root.findViewById((R.id.btnSelectPhoto));
 
         btnTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +88,10 @@ public class TakeOrSelectPhotoFragment extends DialogFragment {
             setImage(strUri, imageView);
 
             if (getArguments() != null) {
-                gym = (Gym) getArguments().getSerializable("gym");
-                gym.setImage(strUri);
+                Gym gym = (Gym) getArguments().getSerializable("gym");
+                if (gym != null) {
+                    gym.setImage(strUri);
+                }
             }
         }
     }

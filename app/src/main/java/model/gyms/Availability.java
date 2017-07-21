@@ -4,11 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-
-/**
- * Created by dkirilova on 7/5/2017.
- */
-
 public class Availability implements Serializable{
 
     public enum DayOfWeek {
@@ -30,18 +25,18 @@ public class Availability implements Serializable{
         setDayOfWeek(dayOfWeek);
     }
 
-    public void setStartTime(int startTime) {
+    private void setStartTime(int startTime) {
             this.startTime = startTime;
     }
 
 
-    public void setDuration(int duration) {
+    private void setDuration(int duration) {
         if(duration > 0 && duration < 2400) {
             this.duration = duration;
         }
     }
 
-    public void setDayOfWeek(String dayOfWeek) {
+    private void setDayOfWeek(String dayOfWeek) {
         if(dayOfWeek != null){
             dayOfWeek = dayOfWeek.toUpperCase();
             for(DayOfWeek dayName : DayOfWeek.values()){
@@ -73,7 +68,6 @@ public class Availability implements Serializable{
         Availability that = (Availability) o;
 
         return getDayOfWeek().equals(that.getDayOfWeek());
-
     }
 
     @Override

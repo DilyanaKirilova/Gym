@@ -12,13 +12,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.gyms.Gym;
-
-import static android.R.id.list;
-
-/**
- * Created by dkirilova on 7/13/2017.
- */
 
 public class DeserializerJson<T> implements JsonDeserializer<List<T>>{
 

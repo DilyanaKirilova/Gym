@@ -10,15 +10,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
 import model.validators.Validator;
-
-/**
- * Created by dkirilova on 7/5/2017.
- */
 
 public class Gym implements Serializable {
     private boolean isFavourite;
@@ -75,8 +70,6 @@ public class Gym implements Serializable {
         }
     }
 
-    ;
-
     public void setCurrentCapacity(int currentCapacity) {
         if (currentCapacity > 0 && currentCapacity <= this.capacity) {
             this.currentCapacity = currentCapacity;
@@ -89,11 +82,11 @@ public class Gym implements Serializable {
         }
     }
 
-    public void setLatitude(double latitude) {
+    private void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(double longitude) {
+    private void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

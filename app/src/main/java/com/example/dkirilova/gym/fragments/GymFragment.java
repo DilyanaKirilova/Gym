@@ -1,8 +1,9 @@
 package com.example.dkirilova.gym.fragments;
 
-
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,60 +29,74 @@ import services.ApiService;
 import services.RetrofitClient;
 
 public class GymFragment extends Fragment
-implements GymAdapter.IGymAdapterController,
-        MainActivity.IGymController{
+        implements GymAdapter.IGymAdapterController {
 
-    private RecyclerView recyclerView;
     private GymAdapter gymsAdapter = new GymAdapter(this);
+
+    public interface IGymController {
+        void showFavouritesGyms();
+
+        void showAllGyms();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        if(FitnessManager.getInstance().getAllGyms().size() == 0) {
+        gymsAdapter = new GymAdapter(this);
+        recyclerView.setAdapter(gymsAdapter);
+
+        if (FitnessManager.getInstance().getAllGyms().size() == 0) {
             loadGyms();
         }
-        showAllGyms();
+        notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
+        recyclerView.setAdapter(gymsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+        ((MainActivity) getActivity()).setIGymController(iGymController);
         return root;
     }
 
-    private void loadGyms(){
+    private void loadGyms() {
         Gson gsonGym = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Gym>>("Gyms")).create();
         ApiService apiServiceGym = RetrofitClient.getRetrofitClient(gsonGym).create(ApiService.class);
         Call<List<Gym>> callGym = apiServiceGym.getGyms();
 
         callGym.enqueue(new Callback<List<Gym>>() {
             @Override
-            public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
+            public void onResponse(@NonNull Call<List<Gym>> call, @NonNull Response<List<Gym>> response) {
                 if (response.isSuccessful()) {
-                    List<Gym> gyms = new ArrayList<>();
+                    List<Gym> gyms;
                     gyms = response.body();
+                    assert gyms != null;
                     for (Gym gym : gyms) {
                         gym.setLatLong(getContext());
                         FitnessManager.getInstance().addExercises(gym.getExercises());
                         FitnessManager.getInstance().add(gym);
-                    }notifyGymAdapter(gyms);
+                    }
+                    notifyGymAdapter(gyms);
                 }
             }
+
             @Override
-            public void onFailure(Call<List<Gym>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Gym>> call, @NonNull Throwable t) {
             }
         });
     }
 
     @Override
     public void editOrDelete(Gym gym) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openEditOrDeleteFragment(gym);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).openEditOrDeleteFragment(gym);
         }
     }
 
     @Override
     public void openDetails(Gym gym) {
-        if(getActivity() instanceof MainActivity) {
+        if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).openGymDetailsFragment(gym);
         }
     }
@@ -90,17 +105,15 @@ implements GymAdapter.IGymAdapterController,
         gymsAdapter.setGyms(gyms);
     }
 
-    @Override
-    public void showAllGyms(){
-        notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
-        recyclerView.setAdapter(gymsAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-    }
+    private IGymController iGymController = new IGymController() {
+        @Override
+        public void showFavouritesGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getFavourites());
+        }
 
-    @Override
-    public void showFavouritesGyms() {
-        notifyGymAdapter(FitnessManager.getInstance().getFavourites());
-        recyclerView.setAdapter(gymsAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-    }
+        @Override
+        public void showAllGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
+        }
+    };
 }

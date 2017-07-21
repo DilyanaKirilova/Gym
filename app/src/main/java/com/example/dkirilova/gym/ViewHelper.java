@@ -2,7 +2,6 @@ package com.example.dkirilova.gym;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.text.method.KeyListener;
 import android.widget.EditText;
 
@@ -12,10 +11,6 @@ import java.util.ArrayList;
 
 import model.gyms.Exercise;
 import model.gyms.Gym;
-
-/**
- * Created by dkirilova on 7/7/2017.
- */
 
 public class ViewHelper {
 

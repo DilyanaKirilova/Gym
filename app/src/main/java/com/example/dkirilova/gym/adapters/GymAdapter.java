@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 
@@ -21,10 +20,6 @@ import java.util.List;
 
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
-
-/**
- * Created by dkirilova on 7/5/2017.
- */
 
 public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 

@@ -34,7 +34,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     private EditText etDuration;
     private Exercise exercise;
     private ArrayList<EditText> eTexts = new ArrayList<>();
-    private RecyclerView recyclerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +53,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         etInstructor = (EditText) root.findViewById(R.id.etEDInstructor);
         Button btnSaveChanges = (Button) root.findViewById(R.id.btnEDSave);
         ImageView ivSelectPhoto = (ImageView) root.findViewById(R.id.ivEDSelectPhoto);
-        recyclerView = (RecyclerView) root.findViewById(R.id.rvGyms);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rvGyms);
 
         eTexts.add(etName);
         eTexts.add(etLevel);
@@ -115,7 +115,9 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         }
                     }
 
-                    gym.setExercise(exercise);
+                    if (gym != null) {
+                        gym.setExercise(exercise);
+                    }
                     FitnessManager.getInstance().add(exercise);
                     if(getActivity() instanceof MainActivity) {
                         ((MainActivity)getActivity()).openGymDetailsFragment(gym);
@@ -136,7 +138,6 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         }
     }
 
-    // empty
     @Override
     public void editOrDelete(Gym gym) {
     }

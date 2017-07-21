@@ -9,10 +9,6 @@ import java.util.List;
 import model.gyms.Exercise;
 import model.gyms.Gym;
 
-/**
- * Created by dkirilova on 7/6/2017.
- */
-
 public class FitnessManager {
     private static final FitnessManager ourInstance = new FitnessManager();
 

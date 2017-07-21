@@ -33,37 +33,13 @@ import model.gyms.Gym;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public interface IExerciseController {
-        void showExercises();
-    }
-
-    public interface IGymController {
-        void showFavouritesGyms();
-
-        void showAllGyms();
-    }
-
-    public interface IGymDetailsController {
-        void editGym();
-    }
-
-    public interface IMapController {
-        void openGoogleMapsApp();
-    }
-
-    // fragments
-    private GymFragment gymFragment = new GymFragment();
-    private GMapFragment gMapFragment = new GMapFragment();
-    private GymDetailsFragment gymDetailsFragment = new GymDetailsFragment();
-    private ExerciseFragment exerciseFragment = new ExerciseFragment();
     private DrawerLayout drawer;
     private Toolbar toolbar;
 
-    // interface
-    IGymController iGymController = (IGymController) gymFragment;
-    IMapController iMapController = (IMapController) gMapFragment;
-    IGymDetailsController iGymDetailsController = (IGymDetailsController) gymDetailsFragment;
-    IExerciseController iExerciseController = (IExerciseController) exerciseFragment;
+    private GymFragment.IGymController iGymController;
+    private GMapFragment.IMapController iMapController;
+    private GymDetailsFragment.IGymDetailsController iGymDetailsController;
+    private ExerciseFragment.IExerciseController iExerciseController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 
     public void openExerciseFragment() {
         configureToolbar(true, View.NO_ID);
-        openFragment(new ExerciseDetailsFragment(), null, null);
+        openFragment(new ExerciseFragment(), null, null);
     }
 
     public void openExerciseDetailsFragment(Gym gym) {
@@ -158,6 +134,8 @@ public class MainActivity extends AppCompatActivity
 
     public void openGymFragment() {
         configureToolbar(true, R.menu.gym_list_menu);
+        CheckBox checkBox = (CheckBox) toolbar.getMenu().findItem(R.id.action_favourite).getActionView();
+        checkBox.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
         setFavouriteCheckState();
         openFragment(new GymFragment(), null, null);
     }
@@ -218,7 +196,7 @@ public class MainActivity extends AppCompatActivity
 
     public void openMapFragment(){
         configureToolbar(true, R.menu.map_menu);
-        openFragment(gMapFragment, null, null);
+        openFragment(new GMapFragment(), null, null);
     }
 
     public void openFragment(Fragment fragment, Serializable serializable, String str){
@@ -230,5 +208,20 @@ public class MainActivity extends AppCompatActivity
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragmentContainer, fragment).commit();
+    }
+
+    public void setIGymController(GymFragment.IGymController iGymController) {
+        this.iGymController = iGymController;
+    }
+
+    public void setIMapController(GMapFragment.IMapController iMapController) {
+        this.iMapController = iMapController;
+    }
+    public void setIGymDetailsController(GymDetailsFragment.IGymDetailsController iGymDetailsController) {
+        this.iGymDetailsController = iGymDetailsController;
+    }
+
+    public void setIExerciseController(ExerciseFragment.IExerciseController iExerciseController) {
+        this.iExerciseController = iExerciseController;
     }
 }

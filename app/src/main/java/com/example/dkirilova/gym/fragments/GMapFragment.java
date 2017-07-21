@@ -39,20 +39,54 @@ import model.singleton.FitnessManager;
 import static com.example.dkirilova.gym.R.id;
 import static com.example.dkirilova.gym.R.layout;
 
-public class GMapFragment extends Fragment implements OnMapReadyCallback, MainActivity.IMapController {
+public class GMapFragment extends Fragment implements OnMapReadyCallback{
+
+    public interface IMapController {
+        void openGoogleMapsApp();
+    }
+    private IMapController iMapController = new IMapController() {
+        @Override
+        public void openGoogleMapsApp() {
+            if (latitudeUser == latitudeGym && longitudeUser == longitudeGym) {
+                Toast.makeText(getActivity(), "Please, choose different location from yours.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (latitudeGym == 0 && longitudeGym == 0) {
+                Toast.makeText(getActivity(), "Please, choose destination point.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String uri = "http://maps.google.com/maps?saddr=" + latitudeUser + "," + longitudeUser + "&daddr=" + latitudeGym + "," + longitudeGym;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            intent.setPackage("com.google.android.apps.maps");
+
+            try {
+                getActivity().startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                String googleMapsAppPackageName = "com.google.android.apps.maps";
+                Intent intentGoogleMaps = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + googleMapsAppPackageName));
+                try {
+                    startActivity(intentGoogleMaps);
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getActivity(), "You need to install Google Play Store.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
 
     private double latitudeUser = 0;
     private double longitudeUser = 0;
     private double latitudeGym = 0;
     private double longitudeGym = 0;
     private LocationManager locationManager;
-    private LocationListener locationListener;
     private Location location;
     private GoogleMap gMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setIMapController(iMapController);
         return inflater.inflate(layout.fragment_gmap, container, false);
     }
 
@@ -96,7 +130,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
         LatLng marker = new LatLng(latitudeUser, longitudeUser);
 
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 5));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 8));
         gMap.addMarker(new MarkerOptions().title("Your Location").position(marker));
 
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -119,7 +153,8 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
                         Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, locationListener = new LocationListener() {
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 if (location != null) {
@@ -167,42 +202,11 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
     private void addMarksForAllGyms(GoogleMap googleMap) {
         for (Gym gym : FitnessManager.getInstance().getAllGyms()) {
-            double lat = gym.getLatitude();
-            double lng = gym.getLongitude();
-            LatLng m = new LatLng(lat, lng);
-            Toast.makeText(getActivity(), "" + gym.getLatitude() + " " + gym.getLongitude(), Toast.LENGTH_SHORT).show();
+
+            LatLng m = new LatLng(gym.getLatitude(), gym.getLongitude());
             googleMap.addMarker(new MarkerOptions().title(
                     "Name: " + gym.getName() + " Phone number: " +
                             gym.getContactPhoneNumber()).position(m));
-        }
-    }
-
-    @Override
-    public void openGoogleMapsApp() {
-
-        if (latitudeUser == latitudeGym && longitudeUser == longitudeGym) {
-            Toast.makeText(getActivity(), "Please, choose different location from yours.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (latitudeGym == 0 && longitudeGym == 0) {
-            Toast.makeText(getActivity(), "Please, choose destination point.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String uri = "http://maps.google.com/maps?saddr=" + latitudeUser + "," + longitudeUser + "&daddr=" + latitudeGym + "," + longitudeGym;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        intent.setPackage("com.google.android.apps.maps");
-
-        try {
-            getActivity().startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            String googleMapsAppPackageName = "com.google.android.apps.maps";
-            Intent intentGoogleMaps = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + googleMapsAppPackageName));
-            try {
-                startActivity(intentGoogleMaps);
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(getActivity(), "You need to install Google Play Store.", Toast.LENGTH_LONG).show();
-            }
         }
     }
 

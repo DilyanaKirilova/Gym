@@ -34,8 +34,8 @@ public class AvailabilityDetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 String dayName = etDayName.getText().toString().trim();
-                int startTime = 0;
-                int duration = 0;
+                int startTime;
+                int duration;
 
                 if(!etStartTime.getText().toString().trim().isEmpty()) {
                     startTime = Integer.valueOf(etStartTime.getText().toString());
@@ -80,7 +80,9 @@ public class AvailabilityDetailsFragment extends Fragment {
                         gym = (Gym) getArguments().getSerializable("gym");
                     }
                 }
-                gym.addAvailability(availability);
+                if (gym != null) {
+                    gym.addAvailability(availability);
+                }
 
                 if(getActivity() instanceof MainActivity){
                     ((MainActivity)getActivity()).openGymDetailsFragment(gym);
