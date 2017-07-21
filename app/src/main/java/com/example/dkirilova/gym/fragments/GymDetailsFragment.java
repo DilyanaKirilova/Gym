@@ -1,5 +1,7 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.HttpDataHandler;
 import model.gyms.Availability;
@@ -61,6 +65,7 @@ public class GymDetailsFragment extends Fragment
     private ArrayList<EditText> eTexts = new ArrayList<>();
 
     private Gym gym;
+    private Gym newGym;
     private ImageButton ibAddExercise;
     private ImageButton ibAddAvailability;
     private Button btnSaveChanges;
@@ -154,7 +159,7 @@ public class GymDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
 
-                Gym newGym = new Gym();
+                newGym = new Gym();
                 ArrayList<Availability> availabilities = new ArrayList<>();
                 availabilities.addAll(gym.getAvailabilities());
                 newGym.setAvailabilities(availabilities);
@@ -165,7 +170,8 @@ public class GymDetailsFragment extends Fragment
                 FitnessManager.getInstance().delete(gym);
 
                 name = etName.getText().toString().trim();
-                address = etAddress.getText().toString().trim();
+               // address = etAddress.getText().toString().trim();
+                address = "1600 Amphitheatre Parkway, Mountain View, CA";
                 description = etDescription.getText().toString().trim();
                 contactPerson = etContactPerson.getText().toString().trim();
                 contactAddress = etContactAddress.getText().toString().trim();
@@ -197,14 +203,12 @@ public class GymDetailsFragment extends Fragment
                     contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
                     newGym.setName(name);
                     newGym.setAddress(address);
+                    newGym.setLatLong(getContext());
                     newGym.setCapacity(capacity);
                     newGym.setCurrentCapacity(currentCapacity);
                     newGym.setDescription(description);
                     newGym.setContact(contact);
-
                     FitnessManager.getInstance().add(newGym);
-
-                    new getCoordinates().execute(address.replace(" ", " "));
 
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).openGymFragment();
@@ -256,48 +260,5 @@ public class GymDetailsFragment extends Fragment
         ibAddExercise.setVisibility(View.VISIBLE);
         ibAddAvailability.setVisibility(View.VISIBLE);
         btnSaveChanges.setVisibility(View.VISIBLE);
-    }
-
-    private class getCoordinates extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String response;
-            try {
-                String address = params[0];
-                HttpDataHandler httpDataHandler = new HttpDataHandler();
-                String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", address);
-                response = httpDataHandler.getHttpData(url);
-                return response;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                String lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
-                        getJSONObject("location").get("lat").toString();
-                String lng = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry").
-                        getJSONObject("location").get("lng").toString();
-
-                gym.setLatitude(Double.valueOf(lat));
-                gym.setLongitude(Double.valueOf(lng));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

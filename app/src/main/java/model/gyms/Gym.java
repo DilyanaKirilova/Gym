@@ -1,7 +1,12 @@
 package model.gyms;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,19 +89,6 @@ public class Gym implements Serializable {
         }
     }
 
-    /*
-    public void setLatitude(double latitude) {
-        if (String.valueOf(latitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.latitude = latitude;
-        }
-    }
-
-    public void setLongitude(double longitude) {
-        if (String.valueOf(longitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.longitude = longitude;
-        }
-    }*/
-
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
@@ -122,6 +114,20 @@ public class Gym implements Serializable {
     public void setAddress(String address) {
         if (Validator.isValidString(address)) {
             this.address = address;
+        }
+    }
+
+    public void setLatLong(Context context) {
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(address, 1);
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                this.setLatitude(address.getLatitude());
+                this.setLongitude(address.getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

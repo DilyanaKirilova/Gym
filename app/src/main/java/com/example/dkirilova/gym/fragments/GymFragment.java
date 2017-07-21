@@ -60,10 +60,10 @@ implements GymAdapter.IGymAdapterController,
                     List<Gym> gyms = new ArrayList<>();
                     gyms = response.body();
                     for (Gym gym : gyms) {
+                        gym.setLatLong(getContext());
                         FitnessManager.getInstance().addExercises(gym.getExercises());
-                    }
-                    FitnessManager.getInstance().addGyms(gyms);
-                    notifyGymAdapter(gyms);
+                        FitnessManager.getInstance().add(gym);
+                    }notifyGymAdapter(gyms);
                 }
             }
             @Override

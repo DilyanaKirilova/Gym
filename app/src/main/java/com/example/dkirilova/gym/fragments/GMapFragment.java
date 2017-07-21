@@ -77,7 +77,13 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
         }
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
+
+
         trackLocation();
         addMarksForAllGyms(gMap);
 
@@ -90,9 +96,8 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
         LatLng marker = new LatLng(latitudeUser, longitudeUser);
 
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 5));
         gMap.addMarker(new MarkerOptions().title("Your Location").position(marker));
-
 
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -162,7 +167,10 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback, MainAc
 
     private void addMarksForAllGyms(GoogleMap googleMap) {
         for (Gym gym : FitnessManager.getInstance().getAllGyms()) {
-            LatLng m = new LatLng(gym.getLatitude(), gym.getLongitude());
+            double lat = gym.getLatitude();
+            double lng = gym.getLongitude();
+            LatLng m = new LatLng(lat, lng);
+            Toast.makeText(getActivity(), "" + gym.getLatitude() + " " + gym.getLongitude(), Toast.LENGTH_SHORT).show();
             googleMap.addMarker(new MarkerOptions().title(
                     "Name: " + gym.getName() + " Phone number: " +
                             gym.getContactPhoneNumber()).position(m));
