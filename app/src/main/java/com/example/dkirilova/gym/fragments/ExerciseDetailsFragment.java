@@ -26,8 +26,6 @@ import model.gyms.Gym;
 import model.singleton.FitnessManager;
 import model.validators.Validator;
 
-import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
-
 
 public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGymAdapterController{
 
@@ -65,7 +63,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         eTexts.add(etDuration);
         eTexts.add(etInstructor);
 
-        changeStateEditable(eTexts, false);
+        GymDetailsFragment.changeStateEditable(eTexts, false);
         ivSelectPhoto.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
 
@@ -82,7 +80,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
             } else if(bundle.getSerializable("gym") != null){
-                changeStateEditable(eTexts, true);
+                GymDetailsFragment.changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
             }
@@ -152,8 +150,6 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
             ((MainActivity) getActivity()).openGymDetailsFragment(gym);
         }
     }
-
-    //todo delete
     @Override
     public void setImage(ImageView imageView, String strUri) {
         if (imageView == null || !Validator.isValidString(strUri)) {

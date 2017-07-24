@@ -49,7 +49,7 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
         TextView tvStartTime;
         TextView tvDuration;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             tvDayName = (TextView) itemView.findViewById(R.id.tvARDayName);

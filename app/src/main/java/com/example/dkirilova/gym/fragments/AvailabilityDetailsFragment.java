@@ -37,34 +37,34 @@ public class AvailabilityDetailsFragment extends Fragment {
                 int startTime;
                 int duration;
 
-                if(!etStartTime.getText().toString().trim().isEmpty()) {
+                if (!etStartTime.getText().toString().trim().isEmpty()) {
                     startTime = Integer.valueOf(etStartTime.getText().toString());
                 } else {
                     etStartTime.setError("..");
                     etStartTime.requestFocus();
                     return;
                 }
-                if(!etDuration.getText().toString().trim().isEmpty()) {
+                if (!etDuration.getText().toString().trim().isEmpty()) {
                     duration = Integer.valueOf(etDuration.getText().toString());
-                }else {
+                } else {
                     etDuration.setError("..");
                     etDuration.requestFocus();
                     return;
                 }
 
                 boolean isValidDayName = false;
-                if(Validator.isValidString(dayName)){
+                if (Validator.isValidString(dayName)) {
 
                     dayName = dayName.toUpperCase();
-                    for(Availability.DayOfWeek day : Availability.DayOfWeek.values()){
-                        if(day.toString().equals(dayName)){
+                    for (Availability.DayOfWeek day : Availability.DayOfWeek.values()) {
+                        if (day.toString().equals(dayName)) {
                             dayName = day.toString();
                             isValidDayName = true;
                             break;
                         }
                     }
 
-                    if(!isValidDayName){
+                    if (!isValidDayName) {
                         etDayName.setError("..");
                         etDayName.requestFocus();
                         return;
@@ -84,9 +84,7 @@ public class AvailabilityDetailsFragment extends Fragment {
                     gym.addAvailability(availability);
                 }
 
-                if(getActivity() instanceof MainActivity){
-                    ((MainActivity)getActivity()).openGymDetailsFragment(gym);
-                }
+                ((MainActivity)getActivity()).openGymDetailsFragment(gym);
             }
         });
 

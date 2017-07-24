@@ -1,6 +1,5 @@
 package com.example.dkirilova.gym.fragments;
 
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -29,7 +27,7 @@ import java.util.List;
 import model.DeserializerJson;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
-import model.validators.Validator;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -1,8 +1,6 @@
 package com.example.dkirilova.gym.fragments;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,11 +13,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.KeyListener;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
@@ -36,12 +32,10 @@ import com.example.dkirilova.gym.adapters.AvailabilityAdapter;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import model.gyms.Availability;
 import model.gyms.Contact;
 import model.gyms.Exercise;
 import model.gyms.Gym;
@@ -49,7 +43,6 @@ import model.singleton.FitnessManager;
 import model.validators.Validator;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 
 public class GymDetailsFragment extends Fragment
         implements ExerciseAdapter.IExerciseAdapterController {
@@ -377,5 +370,18 @@ public class GymDetailsFragment extends Fragment
         Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(i, REQUEST_IMAGE_CAPTURE);
+    }
+
+    public static void changeStateEditable(ArrayList<EditText> editTexts, Boolean editable) {
+        if (editable) {
+            for (EditText editText : editTexts) {
+                editText.setKeyListener((KeyListener) editText.getTag());
+            }
+        } else {
+            for (EditText editText : editTexts) {
+                editText.setTag(editText.getKeyListener());
+                editText.setKeyListener(null);
+            }
+        }
     }
 }

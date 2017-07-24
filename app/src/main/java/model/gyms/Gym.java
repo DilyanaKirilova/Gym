@@ -138,12 +138,6 @@ public class Gym implements Serializable {
         }
     }
 
-    public void setAvailabilities(ArrayList<Availability> availabilities) {
-        if (availabilities != null) {
-            this.availabilities = availabilities;
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -227,12 +221,6 @@ public class Gym implements Serializable {
 
     public List<Exercise> getExercises() {
         return Collections.unmodifiableList(exercises);
-    }
-
-    public void setExercises(ArrayList<Exercise> exercises) {
-        if (exercises != null) {
-            this.exercises = exercises;
-        }
     }
 
     public void removeExercise(Exercise exercise) {
