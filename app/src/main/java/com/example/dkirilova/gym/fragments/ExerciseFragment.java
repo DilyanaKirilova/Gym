@@ -79,9 +79,7 @@ implements ExerciseAdapter.IExerciseAdapterController{
 
     @Override
     public void editOrDelete(Exercise exercise) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openEditOrDeleteFragment(exercise);
-        }
+            ((MainActivity)getActivity()).editOrDelete(null, exercise);
     }
 
     @Override

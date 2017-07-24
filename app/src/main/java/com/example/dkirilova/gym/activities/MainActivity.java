@@ -1,5 +1,6 @@
 package com.example.dkirilova.gym.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -17,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.dialog_fragments.EditOrDeleteFragment;
 import com.example.dkirilova.gym.fragments.AvailabilityDetailsFragment;
 import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.ExerciseFragment;
@@ -29,6 +30,9 @@ import java.io.Serializable;
 
 import model.gyms.Exercise;
 import model.gyms.Gym;
+import model.singleton.FitnessManager;
+
+import static com.example.dkirilova.gym.fragments.ExerciseFragment.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private GymFragment.IGymController iGymController;
     private GMapFragment.IMapController iMapController;
     private GymDetailsFragment.IGymDetailsController iGymDetailsController;
-    private ExerciseFragment.IExerciseController iExerciseController;
+    private IExerciseController iExerciseController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,22 +160,6 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void openEditOrDeleteFragment(Exercise exercise) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
-        editOrDeleteFragment.setArguments(bundle);
-        editOrDeleteFragment.show(getSupportFragmentManager(), "fragment");
-    }
-
-    public void openEditOrDeleteFragment(Gym gym) {
-        //  fragment transaction
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        EditOrDeleteFragment editOrDeleteFragment = new EditOrDeleteFragment();
-        editOrDeleteFragment.setArguments(bundle);
-        editOrDeleteFragment.show(getSupportFragmentManager(), "fragment");
-    }
 
     private void configureToolbar(final boolean isMainScreen, int toolbarMenu) {
         if(toolbarMenu == View.NO_ID){
@@ -221,7 +209,35 @@ public class MainActivity extends AppCompatActivity
         this.iGymDetailsController = iGymDetailsController;
     }
 
-    public void setIExerciseController(ExerciseFragment.IExerciseController iExerciseController) {
+    public void setIExerciseController(IExerciseController iExerciseController) {
         this.iExerciseController = iExerciseController;
+    }
+
+    public void editOrDelete(final Gym gym, final Exercise exercise) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit or delete");
+        builder.setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(gym != null) {
+                    openGymDetailsFragment(gym);
+                }else if(exercise != null){
+                    openExerciseDetailsFragment(exercise);
+                }
+            }
+        });
+        builder.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(gym != null) {
+                    FitnessManager.getInstance().delete(gym);
+                    openGymFragment();
+                }else if(exercise != null){
+                    FitnessManager.getInstance().delete(exercise);
+                    openExerciseFragment();
+                }
+            }
+        });
+        builder.show();
     }
 }

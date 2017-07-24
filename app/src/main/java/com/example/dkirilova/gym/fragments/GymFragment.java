@@ -1,14 +1,21 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
@@ -16,12 +23,13 @@ import com.example.dkirilova.gym.adapters.GymAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import model.DeserializerJson;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
+import model.validators.Validator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -89,15 +97,34 @@ public class GymFragment extends Fragment
 
     @Override
     public void editOrDelete(Gym gym) {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openEditOrDeleteFragment(gym);
-        }
+            ((MainActivity) getActivity()).editOrDelete(gym, null);
     }
 
     @Override
     public void openDetails(Gym gym) {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        }
+    }
+
+    @Override
+    public void setImage(ImageView imageView, String strUri) {
+        imageView.setBackgroundResource(R.drawable.gym);
+        if(strUri == null){
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+
+        try {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels / 2;
+            int width = displayMetrics.widthPixels;
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

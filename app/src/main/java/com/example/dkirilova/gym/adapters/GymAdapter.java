@@ -21,6 +21,7 @@ import java.util.List;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
 
+
 public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
     private IGymAdapterController adapterController;
@@ -45,7 +46,7 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
 
         holder.tvGymName.setText(gym.getName());
         holder.tvGymAddress.setText(gym.getAddress());
-        setImage(holder.ivImage, gym.getImage());
+        this.adapterController.setImage(holder.ivImage, gym.getImage());
 
         int weekHoursSum = 168;
         if(gym.getAvailabilityHours() <= 0.3 * weekHoursSum){
@@ -55,7 +56,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         }else{
             holder.layout.setBackgroundResource(R.color.green);
         }
-
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -121,24 +121,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
         }
     }
 
-    private void setImage(ImageView image, String uriStr) {
-        if (image == null) {
-            return;
-        }
-        if (uriStr == null) {
-            image.setBackgroundResource(R.drawable.gym);
-            return;
-        }
-
-        Uri uri = Uri.parse(uriStr);
-        File imgFile = new File(uri.getPath());
-
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            image.setImageBitmap(myBitmap);
-        }
-    }
-
     public void setGyms(List<Gym> gyms) {
         this.gyms = gyms;
         notifyDataSetChanged();
@@ -147,5 +129,6 @@ public class GymAdapter extends RecyclerView.Adapter<GymAdapter.ViewHolder> {
     public interface IGymAdapterController {
         void editOrDelete(Gym gym);
         void openDetails(Gym gym);
+        void setImage(ImageView ivImage, String image);
     }
 }

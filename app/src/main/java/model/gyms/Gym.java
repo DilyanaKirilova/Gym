@@ -107,6 +107,8 @@ public class Gym implements Serializable {
     public void setAddress(String address) {
         if (Validator.isValidString(address)) {
             this.address = address;
+            this.latitude = 0;
+            this.longitude = 0;
         }
     }
 
@@ -164,9 +166,7 @@ public class Gym implements Serializable {
 
     public void setImage(String image) {
 
-        //if(Validator.isValidString(image)){
         this.image = image;
-        //}
     }
 
     public String getDescription() {
@@ -216,31 +216,13 @@ public class Gym implements Serializable {
 
         Gym gym = (Gym) o;
 
-        if (getCurrentCapacity() != gym.getCurrentCapacity()) return false;
-        if (getCapacity() != gym.getCapacity()) return false;
-        if (Double.compare(gym.getLatitude(), getLatitude()) != 0) return false;
-        if (Double.compare(gym.getLongitude(), getLongitude()) != 0) return false;
-        if (!id.equals(gym.id)) return false;
-        if (!getName().equals(gym.getName())) return false;
-        if (!getAddress().equals(gym.getAddress())) return false;
-        return getDescription().equals(gym.getDescription());
+        return id.equals(gym.id);
+
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = getCurrentCapacity();
-        result = 31 * result + getCapacity();
-        temp = Double.doubleToLongBits(getLatitude());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getLongitude());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + id.hashCode();
-        result = 31 * result + getName().hashCode();
-        result = 31 * result + getAddress().hashCode();
-        result = 31 * result + getDescription().hashCode();
-        return result;
+        return id.hashCode();
     }
 
     public List<Exercise> getExercises() {

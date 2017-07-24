@@ -1,9 +1,26 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +28,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.AvailabilityAdapter;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import model.gyms.Availability;
 import model.gyms.Contact;
@@ -26,11 +48,25 @@ import model.gyms.Gym;
 import model.singleton.FitnessManager;
 import model.validators.Validator;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
-import static com.example.dkirilova.gym.ViewHelper.takePhoto;
 
 public class GymDetailsFragment extends Fragment
-        implements ExerciseAdapter.IExerciseAdapterController{
+        implements ExerciseAdapter.IExerciseAdapterController {
+
+    private static final int PICK_IMAGE_REQUEST = 150;
+    private static final int REQUEST_IMAGE_CAPTURE = 160;
+    private static final int CAMERA_PERMISSIONS_REQUESTS = 170;
+
+    public void getData() {
+        name = etName.getText().toString().trim();
+        address = etAddress.getText().toString().trim();
+        description = etDescription.getText().toString().trim();
+        contactPerson = etContactPerson.getText().toString().trim();
+        contactAddress = etContactAddress.getText().toString().trim();
+        contactEmail = etContactEmail.getText().toString().trim();
+        contactPhoneNum = etContactPhoneNum.getText().toString().trim();
+    }
 
     public interface IGymDetailsController {
         void editGym();
@@ -69,18 +105,18 @@ public class GymDetailsFragment extends Fragment
     private ArrayList<EditText> eTexts = new ArrayList<>();
 
     private Gym gym;
-    private Gym newGym;
     private ImageButton ibAddExercise;
     private ImageButton ibAddAvailability;
     private Button btnSaveChanges;
-    ImageView ivSelectPhoto;
+    private ImageView ivSelectPhoto;
+    private Uri imageUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ((MainActivity)getActivity()).setIGymDetailsController(iGymDetailsController);
-        // Inflate the layout for this fragment
+        ((MainActivity) getActivity()).setIGymDetailsController(iGymDetailsController);
+
         View root = inflater.inflate(R.layout.fragment_gym_details, container, false);
         ivSelectPhoto = (ImageView) root.findViewById(R.id.ivDGAddPhoto);
         btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
@@ -138,14 +174,15 @@ public class GymDetailsFragment extends Fragment
         ivSelectPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto(gym, getActivity());
+                showAlertDialog();
             }
         });
 
         ibAddExercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getData();
+                setData(gym);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).openExerciseDetailsFragment(gym);
                 }
@@ -155,6 +192,8 @@ public class GymDetailsFragment extends Fragment
         ibAddAvailability.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getData();
+                setData(gym);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).openAvailabilitiesDetailsFragment(gym);
                 }
@@ -165,25 +204,7 @@ public class GymDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
 
-                newGym = new Gym();
-                ArrayList<Availability> availabilities = new ArrayList<>();
-                availabilities.addAll(gym.getAvailabilities());
-                newGym.setAvailabilities(availabilities);
-                ArrayList<Exercise> exercises = new ArrayList<>();
-                exercises.addAll(gym.getExercises());
-                newGym.setExercises(exercises);
-
-                FitnessManager.getInstance().delete(gym);
-
-                name = etName.getText().toString().trim();
-               // address = etAddress.getText().toString().trim();
-                address = "1600 Amphitheatre Parkway, Mountain View, CA";
-                description = etDescription.getText().toString().trim();
-                contactPerson = etContactPerson.getText().toString().trim();
-                contactAddress = etContactAddress.getText().toString().trim();
-                contactEmail = etContactEmail.getText().toString().trim();
-                contactPhoneNum = etContactPhoneNum.getText().toString().trim();
-
+                getData();
                 if (!etCapacity.getText().toString().isEmpty()) {
                     capacity = Integer.valueOf(etCapacity.getText().toString());
                 }
@@ -192,7 +213,6 @@ public class GymDetailsFragment extends Fragment
                     currentCapacity = Integer.valueOf(etCurrentCapacity.getText().toString());
                 }
 
-                // todo add the regex validation
                 if (!(Validator.isEmptyField(name, etName) ||
                         Validator.isEmptyField(address, etAddress) ||
                         Validator.isEmptyField(String.valueOf(capacity), etCapacity) ||
@@ -203,18 +223,11 @@ public class GymDetailsFragment extends Fragment
                         Validator.isEmptyField(contactEmail, etContactEmail) ||
                         Validator.isEmptyField(contactPhoneNum, etContactPhoneNum))) {
 
-
-                    //todo save the image here!
-
                     contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
-                    newGym.setName(name);
-                    newGym.setAddress(address);
-                    newGym.setLatLong(getContext());
-                    newGym.setCapacity(capacity);
-                    newGym.setCurrentCapacity(currentCapacity);
-                    newGym.setDescription(description);
-                    newGym.setContact(contact);
-                    FitnessManager.getInstance().add(newGym);
+
+                    setData(gym);
+                    gym.setLatLong(getContext());
+                    FitnessManager.getInstance().add(gym);
 
                     if (getActivity() instanceof MainActivity) {
                         ((MainActivity) getActivity()).openGymFragment();
@@ -222,22 +235,61 @@ public class GymDetailsFragment extends Fragment
                 }
             }
         });
-
         return root;
     }
 
-    private void setGymData() {
-        //todo set image
-        if (gym != null) {
+    private void showAlertDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Choose photo");
+        builder.setPositiveButton("GALLERY", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+            }
+        });
 
+        builder.setNegativeButton("CAMERA", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                            ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_PERMISSIONS_REQUESTS);
+                    }else {
+                        takePicture();
+                    }
+                } else {
+                    takePicture();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void setData(Gym gym) {
+        gym.setName(name);
+        gym.setAddress(address);
+        gym.setCapacity(capacity);
+        gym.setCurrentCapacity(currentCapacity);
+        gym.setDescription(description);
+        contact = new Contact(contactAddress, contactPhoneNum, contactEmail, contactPerson);
+        gym.setContact(contact);
+    }
+
+
+    private void setGymData() {
+        ivSelectPhoto.setVisibility(View.VISIBLE);
+        if (gym != null) {
             if (gym.getName() == null) {
                 changeStateEditable(eTexts, true);
-                ivSelectPhoto.setVisibility(View.VISIBLE);
                 ibAddExercise.setVisibility(View.VISIBLE);
                 ibAddAvailability.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
                 return;
             }
+            setImage(gym.getImage(), ivSelectPhoto);
             etName.setText(gym.getName());
             etAddress.setText(gym.getAddress());
             etDescription.setText(gym.getDescription());
@@ -256,5 +308,74 @@ public class GymDetailsFragment extends Fragment
 
     @Override
     public void openDetails(Exercise exercise) {
+    }
+
+    public void setImage(String strUri, ImageView imageView) {
+        if (imageView == null || !Validator.isValidString(strUri)) {
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+        try {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels / 2;
+            int width = displayMetrics.widthPixels;
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            String strUri = data.getData().toString();
+            setImage(strUri, ivSelectPhoto);
+            gym.setImage(strUri);
+
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            String strUri = imageUri.toString();
+            setImage(strUri, ivSelectPhoto);
+            gym.setImage(strUri);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSIONS_REQUESTS) {
+            if (grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                takePicture();
+            }
+        }
+    }
+
+    private void takePicture() {
+        Calendar cal = Calendar.getInstance();
+        File file = new File(Environment.getExternalStorageDirectory(), (cal.getTimeInMillis() + ".jpg"));
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            file.delete();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        imageUri = Uri.fromFile(file);
+
+        Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(i, REQUEST_IMAGE_CAPTURE);
     }
 }

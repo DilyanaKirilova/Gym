@@ -1,16 +1,10 @@
 package com.example.dkirilova.gym;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.method.KeyListener;
 import android.widget.EditText;
 
-import com.example.dkirilova.gym.dialog_fragments.TakeOrSelectPhotoFragment;
-
 import java.util.ArrayList;
 
-import model.gyms.Exercise;
-import model.gyms.Gym;
 
 public class ViewHelper {
 
@@ -26,22 +20,5 @@ public class ViewHelper {
                 editText.setKeyListener(null);
             }
         }
-    }
-
-    public static void takePhoto(Gym gym, FragmentActivity activity){
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("gym", gym);
-        TakeOrSelectPhotoFragment takeOrSelectPhotoFragment = new TakeOrSelectPhotoFragment();
-        takeOrSelectPhotoFragment.setArguments(bundle);
-        takeOrSelectPhotoFragment.show(activity.getSupportFragmentManager(), "selectImageFragment");
-    }
-    public static void takePhoto(Exercise exercise, FragmentActivity activity){
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("exercise", exercise);
-        TakeOrSelectPhotoFragment takeOrSelectPhotoFragment = new TakeOrSelectPhotoFragment();
-        takeOrSelectPhotoFragment.setArguments(bundle);
-        takeOrSelectPhotoFragment.show(activity.getSupportFragmentManager(), "selectImageFragment");
     }
 }

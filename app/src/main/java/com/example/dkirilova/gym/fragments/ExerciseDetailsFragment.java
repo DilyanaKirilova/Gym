@@ -1,6 +1,9 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import model.gyms.Exercise;
@@ -146,6 +150,22 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     public void openDetails(Gym gym) {
         if(getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        }
+    }
+
+    //todo delete
+    @Override
+    public void setImage(ImageView imageView, String strUri) {
+        if (imageView == null || !Validator.isValidString(strUri)) {
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
