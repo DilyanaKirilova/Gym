@@ -83,8 +83,8 @@ public class AvailabilityDetailsFragment extends Fragment {
                 if (gym != null) {
                     gym.addAvailability(availability);
                 }
+                ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
 
-                ((MainActivity)getActivity()).openGymDetailsFragment(gym);
             }
         });
 

@@ -27,10 +27,11 @@ import services.ApiService;
 import services.RetrofitClient;
 
 public class ExerciseFragment extends Fragment
-implements ExerciseAdapter.IExerciseAdapterController{
+        implements ExerciseAdapter.IExerciseAdapterController {
 
     private RecyclerView recyclerView;
     private ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this);
+
     public interface IExerciseController {
         void showExercises();
     }
@@ -49,7 +50,7 @@ implements ExerciseAdapter.IExerciseAdapterController{
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
 
-        ((MainActivity)getActivity()).setIExerciseController(iExerciseController);
+        ((MainActivity) getActivity()).setIExerciseController(iExerciseController);
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
         loadExercises();
         iExerciseController.showExercises();
@@ -57,7 +58,7 @@ implements ExerciseAdapter.IExerciseAdapterController{
         return root;
     }
 
-    private void loadExercises(){
+    private void loadExercises() {
         Gson gsonExercise = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Exercise>>("Exercises")).create();
         ApiService apiServiceExercise = RetrofitClient.getRetrofitClient(gsonExercise).create(ApiService.class);
         Call<List<Exercise>> callExercise = apiServiceExercise.getExercises();
@@ -79,17 +80,15 @@ implements ExerciseAdapter.IExerciseAdapterController{
 
     @Override
     public void editOrDelete(Exercise exercise) {
-            ((MainActivity)getActivity()).editOrDelete(null, exercise);
+        ((MainActivity) getActivity()).editOrDelete(null, exercise);
     }
 
     @Override
     public void openDetails(Exercise exercise) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openExerciseDetailsFragment(exercise);
-        }
+        ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), exercise, "exercise", false, View.NO_ID);
     }
 
-    public void notifyExerciseAdapter(List<Exercise> exercises){
+    public void notifyExerciseAdapter(List<Exercise> exercises) {
         exerciseAdapter.setExercises(exercises);
     }
 }

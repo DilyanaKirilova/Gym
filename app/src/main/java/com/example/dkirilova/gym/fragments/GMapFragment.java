@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,11 +40,12 @@ import model.singleton.FitnessManager;
 import static com.example.dkirilova.gym.R.id;
 import static com.example.dkirilova.gym.R.layout;
 
-public class GMapFragment extends Fragment implements OnMapReadyCallback{
+public class GMapFragment extends Fragment implements OnMapReadyCallback {
 
     public interface IMapController {
         void openGoogleMapsApp();
     }
+
     private IMapController iMapController = new IMapController() {
         @Override
         public void openGoogleMapsApp() {
@@ -193,9 +195,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback{
 
         builder.setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).openGymFragment();
-                }
+                ((MainActivity) getActivity()).openGymFragment();
             }
         });
         builder.show();

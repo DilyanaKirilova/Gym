@@ -183,9 +183,8 @@ public class GymDetailsFragment extends Fragment
             public void onClick(View v) {
                 getData();
                 setData(gym);
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).openExerciseDetailsFragment(gym);
-                }
+                ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), gym, "gym", false, View.NO_ID);
+
             }
         });
 
@@ -208,9 +207,7 @@ public class GymDetailsFragment extends Fragment
             public void onClick(View v) {
                 getData();
                 setData(gym);
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).openAvailabilitiesDetailsFragment(gym);
-                }
+                ((MainActivity) getActivity()).openFragment(new AvailabilityDetailsFragment(), gym, "gym", false, View.NO_ID);
             }
         });
 
@@ -242,10 +239,7 @@ public class GymDetailsFragment extends Fragment
                     setData(gym);
                     gym.setLatLong(getContext());
                     FitnessManager.getInstance().add(gym);
-
-                    if (getActivity() instanceof MainActivity) {
-                        ((MainActivity) getActivity()).openGymFragment();
-                    }
+                    ((MainActivity) getActivity()).openGymFragment();
                 }
             }
         });
@@ -356,7 +350,7 @@ public class GymDetailsFragment extends Fragment
             String strUri = imageUri.toString();
             setImage(strUri, ivSelectPhoto);
             gym.setImage(strUri);
-        } else if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE && resultCode == RESULT_OK) {
+        } else if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE && resultCode == RESULT_OK) {
             Place place = PlaceAutocomplete.getPlace(getActivity(), data);
             Toast.makeText(getActivity(), "" + place, Toast.LENGTH_SHORT).show();
         }

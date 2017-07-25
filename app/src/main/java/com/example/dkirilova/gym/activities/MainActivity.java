@@ -20,7 +20,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.example.dkirilova.gym.R;
-import com.example.dkirilova.gym.fragments.AvailabilityDetailsFragment;
 import com.example.dkirilova.gym.fragments.ExerciseDetailsFragment;
 import com.example.dkirilova.gym.fragments.ExerciseFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
@@ -65,7 +64,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        openGymFragment();
+       openGymFragment();
+
         try {
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
             startActivityForResult(intent, 123);
@@ -76,13 +76,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void openGymFragment() {
+        CheckBox checkBox = (CheckBox) toolbar.getMenu().findItem(R.id.action_favourite).getActionView();
+        checkBox.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
+        setFavouriteCheckState();
+        openFragment(new GymFragment(), null, null, true, R.menu.gym_list_menu);
+    }
+
     private final Toolbar.OnMenuItemClickListener defaultMenuListener = new Toolbar.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             int id = item.getItemId();
 
             if (R.id.action_add == id) {
-                openGymDetailsFragment(new Gym());
+                openFragment(new GymDetailsFragment(), new Gym(), "gym", false, R.menu.gym_details_menu);
                 return true;
             } else if (R.id.action_edit == id) {
                 iGymDetailsController.editGym();
@@ -113,47 +120,14 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_gyms) {
             openGymFragment();
         } else if (id == R.id.nav_exercises) {
-            openExerciseFragment();
+            openFragment(new ExerciseFragment(), null, null, true, View.NO_ID);
         } else if (id == R.id.nav_map) {
-            openMapFragment();
+            openFragment(new GMapFragment(), null, null, true, R.id.nav_map);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void openExerciseFragment() {
-        configureToolbar(true, View.NO_ID);
-        openFragment(new ExerciseFragment(), null, null);
-    }
-
-    public void openExerciseDetailsFragment(Gym gym) {
-        configureToolbar(false, View.NO_ID);
-        openFragment(new ExerciseDetailsFragment(), gym, "gym");
-    }
-
-    public void openGymDetailsFragment(Gym gym) {
-        configureToolbar(false, R.menu.gym_details_menu);
-        openFragment(new GymDetailsFragment(), gym, "gym");
-    }
-
-    public void openExerciseDetailsFragment(Exercise exercise) {
-        configureToolbar(false, R.menu.gym_details_menu);
-        openFragment(new ExerciseDetailsFragment(), exercise, "exercise");
-    }
-
-    public void openAvailabilitiesDetailsFragment(Gym gym) {
-        configureToolbar(false, View.NO_ID);
-        openFragment(new AvailabilityDetailsFragment(), gym, "gym");
-    }
-
-    public void openGymFragment() {
-        configureToolbar(true, R.menu.gym_list_menu);
-        CheckBox checkBox = (CheckBox) toolbar.getMenu().findItem(R.id.action_favourite).getActionView();
-        checkBox.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
-        setFavouriteCheckState();
-        openFragment(new GymFragment(), null, null);
     }
 
     private void setFavouriteCheckState() {
@@ -171,7 +145,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
 
     private void configureToolbar(final boolean isMainScreen, int toolbarMenu) {
         drawer.setDrawerLockMode(isMainScreen ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -192,13 +165,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void openMapFragment() {
-        configureToolbar(true, R.menu.map_menu);
-        openFragment(new GMapFragment(), null, null);
-    }
+    public void openFragment(Fragment fragment, Serializable serializable, String str, boolean isMainScreen, int toolbarMenu) {
 
-    public void openFragment(Fragment fragment, Serializable serializable, String str) {
-
+        configureToolbar(isMainScreen, toolbarMenu);
         if (serializable != null && str != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(str, serializable);
@@ -231,9 +200,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (gym != null) {
-                    openGymDetailsFragment(gym);
+                    openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
                 } else if (exercise != null) {
-                    openExerciseDetailsFragment(exercise);
+                    openFragment(new ExerciseDetailsFragment(), exercise, "exercise", false, View.NO_ID);
                 }
             }
         });
@@ -245,7 +214,7 @@ public class MainActivity extends AppCompatActivity
                     openGymFragment();
                 } else if (exercise != null) {
                     FitnessManager.getInstance().delete(exercise);
-                    openExerciseFragment();
+                    openFragment(new ExerciseFragment(), null, null, true, View.NO_ID);
                 }
             }
         });

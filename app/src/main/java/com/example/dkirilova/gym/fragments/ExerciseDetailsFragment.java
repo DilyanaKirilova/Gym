@@ -27,7 +27,7 @@ import model.singleton.FitnessManager;
 import model.validators.Validator;
 
 
-public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGymAdapterController{
+public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGymAdapterController {
 
     private EditText etName;
     private EditText etLevel;
@@ -79,7 +79,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                 recyclerView.setAdapter(gymAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-            } else if(bundle.getSerializable("gym") != null){
+            } else if (bundle.getSerializable("gym") != null) {
                 GymDetailsFragment.changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
@@ -113,7 +113,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                     if (getArguments() != null) {
                         Bundle bundle = getArguments();
                         if (bundle.getSerializable("gym") != null) {
-                            gym = ((Gym)bundle.getSerializable("gym"));
+                            gym = ((Gym) bundle.getSerializable("gym"));
                         }
                     }
 
@@ -121,9 +121,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         gym.setExercise(exercise);
                     }
                     FitnessManager.getInstance().add(exercise);
-                    if(getActivity() instanceof MainActivity) {
-                        ((MainActivity)getActivity()).openGymDetailsFragment(gym);
-                    }
+                    ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
                 }
             }
         });
@@ -131,7 +129,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     }
 
     private void setExerciseData() {
-        if(exercise != null) {
+        if (exercise != null) {
             etName.setText(exercise.getName());
             etLevel.setText(String.valueOf(exercise.getLevel()));
             etDescription.setText(exercise.getDescription());
@@ -146,10 +144,9 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
 
     @Override
     public void openDetails(Gym gym) {
-        if(getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
-        }
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
     }
+
     @Override
     public void setImage(ImageView imageView, String strUri) {
         if (imageView == null || !Validator.isValidString(strUri)) {

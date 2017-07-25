@@ -99,20 +99,18 @@ public class GymFragment extends Fragment
 
     @Override
     public void editOrDelete(Gym gym) {
-            ((MainActivity) getActivity()).editOrDelete(gym, null);
+        ((MainActivity) getActivity()).editOrDelete(gym, null);
     }
 
     @Override
     public void openDetails(Gym gym) {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
-        }
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
     }
 
     @Override
     public void setImage(ImageView imageView, String strUri) {
         imageView.setBackgroundResource(R.drawable.gym);
-        if(strUri == null){
+        if (strUri == null) {
             return;
         }
         Uri uri = Uri.parse(strUri);
@@ -139,5 +137,4 @@ public class GymFragment extends Fragment
 
         void showAllGyms();
     }
-
 }
