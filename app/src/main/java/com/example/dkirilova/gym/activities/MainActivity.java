@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
             } else if (R.id.action_edit == id) {
                 iGymDetailsController.editGym();
                 return true;
-            } else if(R.id.action_directions == id){
+            } else if (R.id.action_directions == id) {
                 iMapController.openGoogleMapsApp();
                 return true;
             }
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity
             openGymFragment();
         } else if (id == R.id.nav_exercises) {
             openExerciseFragment();
-        }  else if (id == R.id.nav_map) {
+        } else if (id == R.id.nav_map) {
             openMapFragment();
         }
 
@@ -174,14 +174,12 @@ public class MainActivity extends AppCompatActivity
 
 
     private void configureToolbar(final boolean isMainScreen, int toolbarMenu) {
-        if(toolbarMenu == View.NO_ID){
-            toolbar.getMenu().clear();
-            return;
-        }
         drawer.setDrawerLockMode(isMainScreen ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         toolbar.setNavigationIcon(isMainScreen ? R.drawable.ic_menu_black_24dp : R.drawable.ic_keyboard_backspace_black_24dp);
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(toolbarMenu);
+        if (toolbarMenu != View.NO_ID) {
+            toolbar.inflateMenu(toolbarMenu);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -194,14 +192,14 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void openMapFragment(){
+    public void openMapFragment() {
         configureToolbar(true, R.menu.map_menu);
         openFragment(new GMapFragment(), null, null);
     }
 
-    public void openFragment(Fragment fragment, Serializable serializable, String str){
+    public void openFragment(Fragment fragment, Serializable serializable, String str) {
 
-        if(serializable != null && str != null) {
+        if (serializable != null && str != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(str, serializable);
             fragment.setArguments(bundle);
@@ -217,6 +215,7 @@ public class MainActivity extends AppCompatActivity
     public void setIMapController(GMapFragment.IMapController iMapController) {
         this.iMapController = iMapController;
     }
+
     public void setIGymDetailsController(GymDetailsFragment.IGymDetailsController iGymDetailsController) {
         this.iGymDetailsController = iGymDetailsController;
     }
@@ -231,9 +230,9 @@ public class MainActivity extends AppCompatActivity
         builder.setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(gym != null) {
+                if (gym != null) {
                     openGymDetailsFragment(gym);
-                }else if(exercise != null){
+                } else if (exercise != null) {
                     openExerciseDetailsFragment(exercise);
                 }
             }
@@ -241,10 +240,10 @@ public class MainActivity extends AppCompatActivity
         builder.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(gym != null) {
+                if (gym != null) {
                     FitnessManager.getInstance().delete(gym);
                     openGymFragment();
-                }else if(exercise != null){
+                } else if (exercise != null) {
                     FitnessManager.getInstance().delete(exercise);
                     openExerciseFragment();
                 }

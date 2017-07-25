@@ -65,7 +65,7 @@ public class GymFragment extends Fragment
         } else {
             notifyGymAdapter(allGyms);
         }
-        ((MainActivity) getActivity()).setiGymController(iGymController);
+        ((MainActivity) getActivity()).setIGymController(iGymController);
 
         return root;
     }
@@ -87,7 +87,6 @@ public class GymFragment extends Fragment
                         FitnessManager.getInstance().addExercises(gym.getExercises());
                         FitnessManager.getInstance().add(gym);
                     }
-                    FitnessManager.getInstance().addGyms(gyms);
                     notifyGymAdapter(gyms);
                 }
             }
