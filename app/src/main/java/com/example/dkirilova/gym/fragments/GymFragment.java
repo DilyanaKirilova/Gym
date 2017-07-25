@@ -27,7 +27,6 @@ import java.util.List;
 import model.DeserializerJson;
 import model.gyms.Gym;
 import model.singleton.FitnessManager;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,13 +36,19 @@ import services.RetrofitClient;
 public class GymFragment extends Fragment
         implements GymAdapter.IGymAdapterController {
 
-    private GymAdapter gymsAdapter = new GymAdapter(this);
+    private GymAdapter gymsAdapter;
+    private IGymController iGymController = new IGymController() {
+        @Override
+        public void showFavouritesGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getFavourites());
+        }
 
-    public interface IGymController {
-        void showFavouritesGyms();
+        @Override
+        public void showAllGyms() {
+            notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
+        }
+    };
 
-        void showAllGyms();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,18 +56,17 @@ public class GymFragment extends Fragment
 
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
         RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
-
         gymsAdapter = new GymAdapter(this);
         recyclerView.setAdapter(gymsAdapter);
-
-        if (FitnessManager.getInstance().getAllGyms().size() == 0) {
-            loadGyms();
-        }
-        notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
-        recyclerView.setAdapter(gymsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        List<Gym> allGyms = FitnessManager.getInstance().getAllGyms();
+        if (allGyms.size() == 0) {
+            loadGyms();
+        } else {
+            notifyGymAdapter(allGyms);
+        }
+        ((MainActivity) getActivity()).setiGymController(iGymController);
 
-        ((MainActivity) getActivity()).setIGymController(iGymController);
         return root;
     }
 
@@ -83,6 +87,7 @@ public class GymFragment extends Fragment
                         FitnessManager.getInstance().addExercises(gym.getExercises());
                         FitnessManager.getInstance().add(gym);
                     }
+                    FitnessManager.getInstance().addGyms(gyms);
                     notifyGymAdapter(gyms);
                 }
             }
@@ -130,15 +135,10 @@ public class GymFragment extends Fragment
         gymsAdapter.setGyms(gyms);
     }
 
-    private IGymController iGymController = new IGymController() {
-        @Override
-        public void showFavouritesGyms() {
-            notifyGymAdapter(FitnessManager.getInstance().getFavourites());
-        }
+    public interface IGymController {
+        void showFavouritesGyms();
 
-        @Override
-        public void showAllGyms() {
-            notifyGymAdapter(FitnessManager.getInstance().getAllGyms());
-        }
-    };
+        void showAllGyms();
+    }
+
 }
