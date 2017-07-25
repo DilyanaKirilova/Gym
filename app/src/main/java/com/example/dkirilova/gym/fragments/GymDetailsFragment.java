@@ -156,7 +156,7 @@ public class GymDetailsFragment extends Fragment
             Bundle bundle = getArguments();
 
             if (bundle.getSerializable("gym") != null) {
-                gym = (Gym) getArguments().getSerializable("gym");
+                gym = (Gym) getArguments().getSerializable(getString(R.string.gym));
                 setGymData();
 
                 final AvailabilityAdapter availabilityAdapter = new AvailabilityAdapter();
@@ -183,7 +183,7 @@ public class GymDetailsFragment extends Fragment
             public void onClick(View v) {
                 getData();
                 setData(gym);
-                ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), gym, "gym", false, View.NO_ID);
+                ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), gym, getString(R.string.gym), false, View.NO_ID);
 
             }
         });
@@ -207,7 +207,7 @@ public class GymDetailsFragment extends Fragment
             public void onClick(View v) {
                 getData();
                 setData(gym);
-                ((MainActivity) getActivity()).openFragment(new AvailabilityDetailsFragment(), gym, "gym", false, View.NO_ID);
+                ((MainActivity) getActivity()).openFragment(new AvailabilityDetailsFragment(), gym,getString(R.string.gym), false, View.NO_ID);
             }
         });
 
@@ -248,17 +248,17 @@ public class GymDetailsFragment extends Fragment
 
     private void showAlertDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choose photo");
-        builder.setPositiveButton("GALLERY", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.choose_photo);
+        builder.setPositiveButton(R.string.gellery, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType(getString(R.string.image_type));
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), PICK_IMAGE_REQUEST);
             }
         });
 
-        builder.setNegativeButton("CAMERA", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.camera, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

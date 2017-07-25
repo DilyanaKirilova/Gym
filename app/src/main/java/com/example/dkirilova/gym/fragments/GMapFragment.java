@@ -50,28 +50,28 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback {
         @Override
         public void openGoogleMapsApp() {
             if (latitudeUser == latitudeGym && longitudeUser == longitudeGym) {
-                Toast.makeText(getActivity(), "Please, choose different location from yours.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.choose_different_location, Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (latitudeGym == 0 && longitudeGym == 0) {
-                Toast.makeText(getActivity(), "Please, choose destination point.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.choose_destination_point, Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String uri = "http://maps.google.com/maps?saddr=" + latitudeUser + "," + longitudeUser + "&daddr=" + latitudeGym + "," + longitudeGym;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-            intent.setPackage("com.google.android.apps.maps");
+            intent.setPackage(getString(R.string.maps_package));
 
             try {
                 getActivity().startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                String googleMapsAppPackageName = "com.google.android.apps.maps";
-                Intent intentGoogleMaps = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + googleMapsAppPackageName));
+                String googleMapsAppPackageName = getString(R.string.maps_package);
+                Intent intentGoogleMaps = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.google_playstore) + googleMapsAppPackageName));
                 try {
                     startActivity(intentGoogleMaps);
                 } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(getActivity(), "You need to install Google Play Store.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.install_google_playsore, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -125,7 +125,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback {
         addMarksForAllGyms(gMap);
 
         if (location == null) {
-            Toast.makeText(getActivity(), "Location not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.not_found_location, Toast.LENGTH_SHORT).show();
         } else {
             latitudeUser = location.getLatitude();
             longitudeUser = location.getLongitude();
@@ -134,7 +134,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback {
         LatLng marker = new LatLng(latitudeUser, longitudeUser);
 
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 8));
-        gMap.addMarker(new MarkerOptions().title("Your Location").position(marker));
+        gMap.addMarker(new MarkerOptions().title(getString(R.string.your_location)).position(marker));
 
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -206,7 +206,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback {
 
             LatLng m = new LatLng(gym.getLatitude(), gym.getLongitude());
             googleMap.addMarker(new MarkerOptions().title(
-                    "Name: " + gym.getName() + " Phone number: " +
+                    getString(R.string.name) + gym.getName() + getString(R.string.phone_number) +
                             gym.getContactPhoneNumber()).position(m));
         }
     }

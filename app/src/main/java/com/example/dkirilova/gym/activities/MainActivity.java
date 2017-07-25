@@ -1,7 +1,6 @@
 package com.example.dkirilova.gym.activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -25,9 +24,6 @@ import com.example.dkirilova.gym.fragments.ExerciseFragment;
 import com.example.dkirilova.gym.fragments.GymDetailsFragment;
 import com.example.dkirilova.gym.fragments.GymFragment;
 import com.example.dkirilova.gym.fragments.GMapFragment;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.io.Serializable;
 
@@ -64,23 +60,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-       openGymFragment();
-
-        try {
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
-            startActivityForResult(intent, 123);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+        openGymFragment();
     }
 
     public void openGymFragment() {
+        openFragment(new GymFragment(), null, null, true, R.menu.gym_list_menu);
         CheckBox checkBox = (CheckBox) toolbar.getMenu().findItem(R.id.action_favourite).getActionView();
         checkBox.setButtonDrawable(R.drawable.ic_favorite_border_black_24dp);
         setFavouriteCheckState();
-        openFragment(new GymFragment(), null, null, true, R.menu.gym_list_menu);
     }
 
     private final Toolbar.OnMenuItemClickListener defaultMenuListener = new Toolbar.OnMenuItemClickListener() {
@@ -89,7 +76,7 @@ public class MainActivity extends AppCompatActivity
             int id = item.getItemId();
 
             if (R.id.action_add == id) {
-                openFragment(new GymDetailsFragment(), new Gym(), "gym", false, R.menu.gym_details_menu);
+                openFragment(new GymDetailsFragment(), new Gym(), getString(R.string.gym), false, R.menu.gym_details_menu);
                 return true;
             } else if (R.id.action_edit == id) {
                 iGymDetailsController.editGym();
@@ -122,7 +109,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_exercises) {
             openFragment(new ExerciseFragment(), null, null, true, View.NO_ID);
         } else if (id == R.id.nav_map) {
-            openFragment(new GMapFragment(), null, null, true, R.id.nav_map);
+            openFragment(new GMapFragment(), null, null, true, R.menu.map_menu);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -195,18 +182,18 @@ public class MainActivity extends AppCompatActivity
 
     public void editOrDelete(final Gym gym, final Exercise exercise) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Edit or delete");
-        builder.setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.edit_or_delete);
+        builder.setPositiveButton(R.string.edit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (gym != null) {
-                    openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
+                    openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
                 } else if (exercise != null) {
-                    openFragment(new ExerciseDetailsFragment(), exercise, "exercise", false, View.NO_ID);
+                    openFragment(new ExerciseDetailsFragment(), exercise, getString(R.string.exercise), false, View.NO_ID);
                 }
             }
         });
-        builder.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (gym != null) {

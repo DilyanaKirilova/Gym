@@ -104,7 +104,7 @@ public class GymFragment extends Fragment
 
     @Override
     public void openDetails(Gym gym) {
-        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
     }
 
     @Override

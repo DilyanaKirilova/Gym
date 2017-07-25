@@ -85,7 +85,7 @@ public class ExerciseFragment extends Fragment
 
     @Override
     public void openDetails(Exercise exercise) {
-        ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), exercise, "exercise", false, View.NO_ID);
+        ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), exercise, getString(R.string.exercise), false, View.NO_ID);
     }
 
     public void notifyExerciseAdapter(List<Exercise> exercises) {

@@ -17,11 +17,9 @@ import model.validators.Validator;
 
 public class AvailabilityDetailsFragment extends Fragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_availability_details, container, false);
 
         final EditText etDayName = (EditText) root.findViewById(R.id.etADDayName);
@@ -70,24 +68,20 @@ public class AvailabilityDetailsFragment extends Fragment {
                         return;
                     }
                 }
-
-
                 Availability availability = new Availability(startTime, duration, dayName);
 
                 Gym gym = new Gym();
                 if (getArguments() != null) {
-                    if (getArguments().getSerializable("gym") != null) {
-                        gym = (Gym) getArguments().getSerializable("gym");
+                    if (getArguments().getSerializable(getString(R.string.gym)) != null) {
+                        gym = (Gym) getArguments().getSerializable(getString(R.string.gym));
                     }
                 }
                 if (gym != null) {
                     gym.addAvailability(availability);
                 }
-                ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
-
+                ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
             }
         });
-
         return root;
     }
 }

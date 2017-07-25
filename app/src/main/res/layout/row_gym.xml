@@ -30,7 +30,6 @@
             android:gravity="center"
             android:layout_marginLeft="10dp"
             android:button="@drawable/ic_favorite_border_black_24dp"/>
-
     </LinearLayout>
 
     <TextView
@@ -38,6 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Address" />
+        android:text="@string/address" />
 
 </LinearLayout>

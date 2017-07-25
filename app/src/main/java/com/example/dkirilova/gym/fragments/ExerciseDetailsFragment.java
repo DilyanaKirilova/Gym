@@ -70,8 +70,8 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         if (getArguments() != null) {
 
             Bundle bundle = getArguments();
-            if (bundle.getSerializable("exercise") != null) {
-                exercise = (Exercise) getArguments().getSerializable("exercise");
+            if (bundle.getSerializable(getString(R.string.exercise)) != null) {
+                exercise = (Exercise) getArguments().getSerializable(getString(R.string.exercise));
                 setExerciseData();
 
                 GymAdapter gymAdapter = new GymAdapter(this);
@@ -79,7 +79,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                 recyclerView.setAdapter(gymAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-            } else if (bundle.getSerializable("gym") != null) {
+            } else if (bundle.getSerializable(getString(R.string.gym)) != null) {
                 GymDetailsFragment.changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
@@ -113,7 +113,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                     if (getArguments() != null) {
                         Bundle bundle = getArguments();
                         if (bundle.getSerializable("gym") != null) {
-                            gym = ((Gym) bundle.getSerializable("gym"));
+                            gym = ((Gym) bundle.getSerializable(getString(R.string.gym)));
                         }
                     }
 
@@ -121,7 +121,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                         gym.setExercise(exercise);
                     }
                     FitnessManager.getInstance().add(exercise);
-                    ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
+                    ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
                 }
             }
         });
@@ -144,7 +144,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
 
     @Override
     public void openDetails(Gym gym) {
-        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, "gym", false, R.menu.gym_details_menu);
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
     }
 
     @Override
