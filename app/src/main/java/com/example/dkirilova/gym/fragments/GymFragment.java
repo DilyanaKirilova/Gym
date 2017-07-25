@@ -1,13 +1,19 @@
 package com.example.dkirilova.gym.fragments;
 
-
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
@@ -15,7 +21,7 @@ import com.example.dkirilova.gym.adapters.GymAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 import model.DeserializerJson;
@@ -59,7 +65,7 @@ public class GymFragment extends Fragment
         } else {
             notifyGymAdapter(allGyms);
         }
-        ((MainActivity) getActivity()).setiGymController(iGymController);
+        ((MainActivity) getActivity()).setIGymController(iGymController);
 
         return root;
     }
@@ -71,35 +77,54 @@ public class GymFragment extends Fragment
 
         callGym.enqueue(new Callback<List<Gym>>() {
             @Override
-            public void onResponse(Call<List<Gym>> call, Response<List<Gym>> response) {
+            public void onResponse(@NonNull Call<List<Gym>> call, @NonNull Response<List<Gym>> response) {
                 if (response.isSuccessful()) {
                     List<Gym> gyms;
                     gyms = response.body();
+                    assert gyms != null;
                     for (Gym gym : gyms) {
+                        gym.setLatLong(getContext());
                         FitnessManager.getInstance().addExercises(gym.getExercises());
+                        FitnessManager.getInstance().add(gym);
                     }
-                    FitnessManager.getInstance().addGyms(gyms);
                     notifyGymAdapter(gyms);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Gym>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Gym>> call, @NonNull Throwable t) {
             }
         });
     }
 
     @Override
     public void editOrDelete(Gym gym) {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openEditOrDeleteFragment(gym);
-        }
+        ((MainActivity) getActivity()).editOrDelete(gym, null);
     }
 
     @Override
     public void openDetails(Gym gym) {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
+    }
+
+    @Override
+    public void setImage(ImageView imageView, String strUri) {
+        imageView.setBackgroundResource(R.drawable.gym);
+        if (strUri == null) {
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+
+        try {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels / 2;
+            int width = displayMetrics.widthPixels;
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -112,5 +137,4 @@ public class GymFragment extends Fragment
 
         void showAllGyms();
     }
-
 }

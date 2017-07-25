@@ -12,12 +12,7 @@ import java.util.List;
 
 import model.gyms.Availability;
 
-/**
- * Created by dkirilova on 7/17/2017.
- */
-
 public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapter.ViewHolder>{
-
 
     private List<Availability> availabilities;
 
@@ -54,7 +49,7 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
         TextView tvStartTime;
         TextView tvDuration;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             tvDayName = (TextView) itemView.findViewById(R.id.tvARDayName);

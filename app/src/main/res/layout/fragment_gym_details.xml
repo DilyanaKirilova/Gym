@@ -23,11 +23,23 @@
             android:layout_height="wrap_content"
             android:hint="@string/name" />
 
-        <EditText
-            android:id="@+id/etDGAddress"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/address"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/etDGAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/address"/>
+
+            <ImageButton
+                android:id="@+id/autocomplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_location_on_black_24dp" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/etDGDescription"
@@ -128,5 +140,6 @@
             android:layout_height="wrap_content"
             android:text="@string/save"
             android:visibility="gone"/>
+
     </LinearLayout>
 </ScrollView>

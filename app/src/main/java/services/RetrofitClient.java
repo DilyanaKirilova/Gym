@@ -7,14 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
-/**
- * Created by dkirilova on 7/12/2017.
- */
-
 public class RetrofitClient {
 
-    public static final String BASE_URL = "https://demo6072753.mockable.io";
-    public static Retrofit retrofit = null;
+    private static final String BASE_URL = "https://demo6072753.mockable.io";
+    private static Retrofit retrofit = null;
 
     public static Retrofit getRetrofitClient(Gson gson) {
         okhttp3.OkHttpClient.Builder builder = new okhttp3.OkHttpClient.Builder();

@@ -1,14 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_favourite"
-        app:showAsAction="always"
         android:icon="@drawable/ic_favorite_border_black_24dp"
         app:actionViewClass="android.widget.CheckBox"
-        android:title="Favourites"/>
+        android:title="Favourites"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_add"
-        app:showAsAction="always"
         android:icon="@drawable/ic_add_circle_black_24dp"
-        android:title="Add"/>
+        android:title="Add"
+        app:showAsAction="always"/>
 </menu>

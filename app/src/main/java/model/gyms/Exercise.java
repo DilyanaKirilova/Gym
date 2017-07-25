@@ -7,9 +7,6 @@ import java.util.UUID;
 
 import model.validators.Validator;
 
-/**
- * Created by dkirilova on 7/5/2017.
- */
 
 public class Exercise implements Serializable{
     @SerializedName("duration")

@@ -1,19 +1,19 @@
 package model.gyms;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
 import model.validators.Validator;
-
-/**
- * Created by dkirilova on 7/5/2017.
- */
 
 public class Gym implements Serializable {
     private boolean isFavourite;
@@ -70,8 +70,6 @@ public class Gym implements Serializable {
         }
     }
 
-    ;
-
     public void setCurrentCapacity(int currentCapacity) {
         if (currentCapacity > 0 && currentCapacity <= this.capacity) {
             this.currentCapacity = currentCapacity;
@@ -84,24 +82,11 @@ public class Gym implements Serializable {
         }
     }
 
-    /*
-    public void setLatitude(double latitude) {
-        if (String.valueOf(latitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.latitude = latitude;
-        }
-    }
-
-    public void setLongitude(double longitude) {
-        if (String.valueOf(longitude).matches(Validator.LATITUDE_LONGITUDE_REGEX)) {
-            this.longitude = longitude;
-        }
-    }*/
-
-    public void setLatitude(double latitude) {
+    private void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(double longitude) {
+    private void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -122,6 +107,22 @@ public class Gym implements Serializable {
     public void setAddress(String address) {
         if (Validator.isValidString(address)) {
             this.address = address;
+            this.latitude = 0;
+            this.longitude = 0;
+        }
+    }
+
+    public void setLatLong(Context context) {
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(address, 1);
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                this.setLatitude(address.getLatitude());
+                this.setLongitude(address.getLongitude());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -134,12 +135,6 @@ public class Gym implements Serializable {
     public void setContact(Contact contact) {
         if (contact != null) {
             this.contact = contact;
-        }
-    }
-
-    public void setAvailabilities(ArrayList<Availability> availabilities) {
-        if (availabilities != null) {
-            this.availabilities = availabilities;
         }
     }
 
@@ -165,9 +160,7 @@ public class Gym implements Serializable {
 
     public void setImage(String image) {
 
-        //if(Validator.isValidString(image)){
         this.image = image;
-        //}
     }
 
     public String getDescription() {
@@ -217,41 +210,17 @@ public class Gym implements Serializable {
 
         Gym gym = (Gym) o;
 
-        if (getCurrentCapacity() != gym.getCurrentCapacity()) return false;
-        if (getCapacity() != gym.getCapacity()) return false;
-        if (Double.compare(gym.getLatitude(), getLatitude()) != 0) return false;
-        if (Double.compare(gym.getLongitude(), getLongitude()) != 0) return false;
-        if (!id.equals(gym.id)) return false;
-        if (!getName().equals(gym.getName())) return false;
-        if (!getAddress().equals(gym.getAddress())) return false;
-        return getDescription().equals(gym.getDescription());
+        return id.equals(gym.id);
+
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = getCurrentCapacity();
-        result = 31 * result + getCapacity();
-        temp = Double.doubleToLongBits(getLatitude());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(getLongitude());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + id.hashCode();
-        result = 31 * result + getName().hashCode();
-        result = 31 * result + getAddress().hashCode();
-        result = 31 * result + getDescription().hashCode();
-        return result;
+        return id.hashCode();
     }
 
     public List<Exercise> getExercises() {
         return Collections.unmodifiableList(exercises);
-    }
-
-    public void setExercises(ArrayList<Exercise> exercises) {
-        if (exercises != null) {
-            this.exercises = exercises;
-        }
     }
 
     public void removeExercise(Exercise exercise) {

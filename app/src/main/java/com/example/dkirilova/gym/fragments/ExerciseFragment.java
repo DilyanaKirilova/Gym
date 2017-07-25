@@ -1,6 +1,7 @@
 package com.example.dkirilova.gym.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,6 @@ import com.example.dkirilova.gym.adapters.ExerciseAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import model.DeserializerJson;
@@ -27,69 +27,68 @@ import services.ApiService;
 import services.RetrofitClient;
 
 public class ExerciseFragment extends Fragment
-implements ExerciseAdapter.IExerciseAdapterController,
-        MainActivity.IExerciseController{
+        implements ExerciseAdapter.IExerciseAdapterController {
 
     private RecyclerView recyclerView;
     private ExerciseAdapter exerciseAdapter = new ExerciseAdapter(this);
 
+    public interface IExerciseController {
+        void showExercises();
+    }
+
+    IExerciseController iExerciseController = new IExerciseController() {
+        @Override
+        public void showExercises() {
+            notifyExerciseAdapter(FitnessManager.getInstance().getAllExercises());
+            recyclerView.setAdapter(exerciseAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_recycler_view, container, false);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
 
-        // todo call method only once
+        ((MainActivity) getActivity()).setIExerciseController(iExerciseController);
+        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerView);
         loadExercises();
-        showExercises();
+        iExerciseController.showExercises();
 
         return root;
     }
 
-    private void loadExercises(){
+    private void loadExercises() {
         Gson gsonExercise = new GsonBuilder().registerTypeAdapter(List.class, new DeserializerJson<List<Exercise>>("Exercises")).create();
         ApiService apiServiceExercise = RetrofitClient.getRetrofitClient(gsonExercise).create(ApiService.class);
         Call<List<Exercise>> callExercise = apiServiceExercise.getExercises();
 
         callExercise.enqueue(new Callback<List<Exercise>>() {
             @Override
-            public void onResponse(Call<List<Exercise>> call, Response<List<Exercise>> response) {
-                List<Exercise> exercises = new ArrayList<>();
+            public void onResponse(@NonNull Call<List<Exercise>> call, @NonNull Response<List<Exercise>> response) {
+                List<Exercise> exercises;
                 exercises = response.body();
                 FitnessManager.getInstance().addExercises(exercises);
                 notifyExerciseAdapter(exercises);
             }
 
             @Override
-            public void onFailure(Call<List<Exercise>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Exercise>> call, @NonNull Throwable t) {
             }
         });
     }
 
     @Override
     public void editOrDelete(Exercise exercise) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openEditOrDeleteFragment(exercise);
-        }
+        ((MainActivity) getActivity()).editOrDelete(null, exercise);
     }
 
     @Override
     public void openDetails(Exercise exercise) {
-        if(getActivity() instanceof MainActivity){
-            ((MainActivity)getActivity()).openExerciseDetailsFragment(exercise);
-        }
+        ((MainActivity) getActivity()).openFragment(new ExerciseDetailsFragment(), exercise, getString(R.string.exercise), false, View.NO_ID);
     }
 
-    public void notifyExerciseAdapter(List<Exercise> exercises){
+    public void notifyExerciseAdapter(List<Exercise> exercises) {
         exerciseAdapter.setExercises(exercises);
     }
-
-    @Override
-    public void showExercises() {
-        notifyExerciseAdapter(FitnessManager.getInstance().getAllExercises());
-        recyclerView.setAdapter(exerciseAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-    }
-
 }

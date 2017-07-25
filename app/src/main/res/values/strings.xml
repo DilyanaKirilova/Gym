@@ -29,4 +29,24 @@
     <string name="availabilities">Availabilities</string>
     <string name="start_time">Start time</string>
     <string name="day_name">Day name</string>
+    <string name="google_maps_key">AIzaSyBkLPDXiV31-dzUww9meo8Hf5WXU61OMVs</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="gyms">Gyms</string>
+    <string name="android_studio">Android Studio</string>
+    <string name="android_studio_android_com">android.studio@android.com</string>
+    <string name="edit_or_delete">Edit or delete</string>
+    <string name="gym">gym</string>
+    <string name="exercise">exercise</string>
+    <string name="choose_different_location">Please, choose different location from yours.</string>
+    <string name="choose_destination_point">Please, choose destination point.</string>
+    <string name="maps_package">com.google.android.apps.maps</string>
+    <string name="install_google_playsore">You need to install Google Play Store.</string>
+    <string name="not_found_location">Location not found</string>
+    <string name="your_location">Your Location</string>
+    <string name="google_playstore">https://play.google.com/store/apps/details?id=</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="gellery">GALLERY</string>
+    <string name="choose_photo">Choose photo</string>
+    <string name="camera">CAMERA</string>
+    <string name="image_type">image/*</string>
 </resources>

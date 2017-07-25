@@ -1,6 +1,9 @@
 package com.example.dkirilova.gym.fragments;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.GymAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import model.gyms.Exercise;
@@ -22,10 +26,8 @@ import model.gyms.Gym;
 import model.singleton.FitnessManager;
 import model.validators.Validator;
 
-import static com.example.dkirilova.gym.ViewHelper.changeStateEditable;
 
-
-public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGymAdapterController{
+public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGymAdapterController {
 
     private EditText etName;
     private EditText etLevel;
@@ -34,7 +36,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     private EditText etDuration;
     private Exercise exercise;
     private ArrayList<EditText> eTexts = new ArrayList<>();
-    private RecyclerView recyclerView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         etInstructor = (EditText) root.findViewById(R.id.etEDInstructor);
         Button btnSaveChanges = (Button) root.findViewById(R.id.btnEDSave);
         ImageView ivSelectPhoto = (ImageView) root.findViewById(R.id.ivEDSelectPhoto);
-        recyclerView = (RecyclerView) root.findViewById(R.id.rvGyms);
+        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.rvGyms);
 
         eTexts.add(etName);
         eTexts.add(etLevel);
@@ -61,15 +63,15 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         eTexts.add(etDuration);
         eTexts.add(etInstructor);
 
-        changeStateEditable(eTexts, false);
+        GymDetailsFragment.changeStateEditable(eTexts, false);
         ivSelectPhoto.setVisibility(View.GONE);
         btnSaveChanges.setVisibility(View.GONE);
 
         if (getArguments() != null) {
 
             Bundle bundle = getArguments();
-            if (bundle.getSerializable("exercise") != null) {
-                exercise = (Exercise) getArguments().getSerializable("exercise");
+            if (bundle.getSerializable(getString(R.string.exercise)) != null) {
+                exercise = (Exercise) getArguments().getSerializable(getString(R.string.exercise));
                 setExerciseData();
 
                 GymAdapter gymAdapter = new GymAdapter(this);
@@ -77,8 +79,8 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                 recyclerView.setAdapter(gymAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-            } else if(bundle.getSerializable("gym") != null){
-                changeStateEditable(eTexts, true);
+            } else if (bundle.getSerializable(getString(R.string.gym)) != null) {
+                GymDetailsFragment.changeStateEditable(eTexts, true);
                 ivSelectPhoto.setVisibility(View.VISIBLE);
                 btnSaveChanges.setVisibility(View.VISIBLE);
             }
@@ -111,15 +113,15 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
                     if (getArguments() != null) {
                         Bundle bundle = getArguments();
                         if (bundle.getSerializable("gym") != null) {
-                            gym = ((Gym)bundle.getSerializable("gym"));
+                            gym = ((Gym) bundle.getSerializable(getString(R.string.gym)));
                         }
                     }
 
-                    gym.setExercise(exercise);
-                    FitnessManager.getInstance().add(exercise);
-                    if(getActivity() instanceof MainActivity) {
-                        ((MainActivity)getActivity()).openGymDetailsFragment(gym);
+                    if (gym != null) {
+                        gym.setExercise(exercise);
                     }
+                    FitnessManager.getInstance().add(exercise);
+                    ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
                 }
             }
         });
@@ -127,7 +129,7 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
     }
 
     private void setExerciseData() {
-        if(exercise != null) {
+        if (exercise != null) {
             etName.setText(exercise.getName());
             etLevel.setText(String.valueOf(exercise.getLevel()));
             etDescription.setText(exercise.getDescription());
@@ -136,15 +138,27 @@ public class ExerciseDetailsFragment extends Fragment implements GymAdapter.IGym
         }
     }
 
-    // empty
     @Override
     public void editOrDelete(Gym gym) {
     }
 
     @Override
     public void openDetails(Gym gym) {
-        if(getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).openGymDetailsFragment(gym);
+        ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
+    }
+
+    @Override
+    public void setImage(ImageView imageView, String strUri) {
+        if (imageView == null || !Validator.isValidString(strUri)) {
+            return;
+        }
+        Uri uri = Uri.parse(strUri);
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

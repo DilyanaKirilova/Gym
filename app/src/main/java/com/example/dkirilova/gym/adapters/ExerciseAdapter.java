@@ -18,10 +18,6 @@ import java.util.List;
 
 import model.gyms.Exercise;
 
-/**
- * Created by dkirilova on 7/6/2017.
- */
-
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
     private List<Exercise> exercises;

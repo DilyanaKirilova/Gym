@@ -17,11 +17,9 @@ import model.validators.Validator;
 
 public class AvailabilityDetailsFragment extends Fragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_availability_details, container, false);
 
         final EditText etDayName = (EditText) root.findViewById(R.id.etADDayName);
@@ -34,60 +32,56 @@ public class AvailabilityDetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 String dayName = etDayName.getText().toString().trim();
-                int startTime = 0;
-                int duration = 0;
+                int startTime;
+                int duration;
 
-                if(!etStartTime.getText().toString().trim().isEmpty()) {
+                if (!etStartTime.getText().toString().trim().isEmpty()) {
                     startTime = Integer.valueOf(etStartTime.getText().toString());
                 } else {
                     etStartTime.setError("..");
                     etStartTime.requestFocus();
                     return;
                 }
-                if(!etDuration.getText().toString().trim().isEmpty()) {
+                if (!etDuration.getText().toString().trim().isEmpty()) {
                     duration = Integer.valueOf(etDuration.getText().toString());
-                }else {
+                } else {
                     etDuration.setError("..");
                     etDuration.requestFocus();
                     return;
                 }
 
                 boolean isValidDayName = false;
-                if(Validator.isValidString(dayName)){
+                if (Validator.isValidString(dayName)) {
 
                     dayName = dayName.toUpperCase();
-                    for(Availability.DayOfWeek day : Availability.DayOfWeek.values()){
-                        if(day.toString().equals(dayName)){
+                    for (Availability.DayOfWeek day : Availability.DayOfWeek.values()) {
+                        if (day.toString().equals(dayName)) {
                             dayName = day.toString();
                             isValidDayName = true;
                             break;
                         }
                     }
 
-                    if(!isValidDayName){
+                    if (!isValidDayName) {
                         etDayName.setError("..");
                         etDayName.requestFocus();
                         return;
                     }
                 }
-
-
                 Availability availability = new Availability(startTime, duration, dayName);
 
                 Gym gym = new Gym();
                 if (getArguments() != null) {
-                    if (getArguments().getSerializable("gym") != null) {
-                        gym = (Gym) getArguments().getSerializable("gym");
+                    if (getArguments().getSerializable(getString(R.string.gym)) != null) {
+                        gym = (Gym) getArguments().getSerializable(getString(R.string.gym));
                     }
                 }
-                gym.addAvailability(availability);
-
-                if(getActivity() instanceof MainActivity){
-                    ((MainActivity)getActivity()).openGymDetailsFragment(gym);
+                if (gym != null) {
+                    gym.addAvailability(availability);
                 }
+                ((MainActivity) getActivity()).openFragment(new GymDetailsFragment(), gym, getString(R.string.gym), false, R.menu.gym_details_menu);
             }
         });
-
         return root;
     }
 }

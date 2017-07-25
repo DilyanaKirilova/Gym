@@ -9,10 +9,6 @@ import java.util.List;
 import model.gyms.Exercise;
 import model.gyms.Gym;
 
-/**
- * Created by dkirilova on 7/6/2017.
- */
-
 public class FitnessManager {
     private static final FitnessManager ourInstance = new FitnessManager();
 
@@ -97,10 +93,5 @@ public class FitnessManager {
             }
         }
         return gyms;
-    }
-
-    public void addGyms(List<Gym> gyms) {
-
-       this.allGyms.get(false).addAll(gyms);
     }
 }
