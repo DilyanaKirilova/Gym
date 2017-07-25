@@ -25,11 +25,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dkirilova.gym.R;
 import com.example.dkirilova.gym.activities.MainActivity;
 import com.example.dkirilova.gym.adapters.AvailabilityAdapter;
 import com.example.dkirilova.gym.adapters.ExerciseAdapter;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +55,7 @@ public class GymDetailsFragment extends Fragment
     private static final int PICK_IMAGE_REQUEST = 150;
     private static final int REQUEST_IMAGE_CAPTURE = 160;
     private static final int CAMERA_PERMISSIONS_REQUESTS = 170;
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 180;
 
     public void getData() {
         name = etName.getText().toString().trim();
@@ -115,6 +121,7 @@ public class GymDetailsFragment extends Fragment
         btnSaveChanges = (Button) root.findViewById(R.id.btnDGSave);
         ibAddExercise = (ImageButton) root.findViewById(R.id.ibAddExercise);
         ibAddAvailability = (ImageButton) root.findViewById(R.id.ibAddAvailability);
+        ImageButton ibPlaceAutocomplete = (ImageButton) root.findViewById(R.id.autocomplete);
         etName = (EditText) root.findViewById(R.id.etDGName);
         etAddress = (EditText) root.findViewById(R.id.etDGAddress);
         etCapacity = (EditText) root.findViewById(R.id.etCapacity);
@@ -178,6 +185,20 @@ public class GymDetailsFragment extends Fragment
                 setData(gym);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).openExerciseDetailsFragment(gym);
+                }
+            }
+        });
+
+        ibPlaceAutocomplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(getActivity());
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -248,9 +269,9 @@ public class GymDetailsFragment extends Fragment
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                            ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                            ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_PERMISSIONS_REQUESTS);
-                    }else {
+                    } else {
                         takePicture();
                     }
                 } else {
@@ -331,10 +352,13 @@ public class GymDetailsFragment extends Fragment
             setImage(strUri, ivSelectPhoto);
             gym.setImage(strUri);
 
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             String strUri = imageUri.toString();
             setImage(strUri, ivSelectPhoto);
             gym.setImage(strUri);
+        } else if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE && resultCode == RESULT_OK) {
+            Place place = PlaceAutocomplete.getPlace(getActivity(), data);
+            Toast.makeText(getActivity(), "" + place, Toast.LENGTH_SHORT).show();
         }
     }
 

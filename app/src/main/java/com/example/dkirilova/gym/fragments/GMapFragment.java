@@ -82,6 +82,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback{
     private LocationManager locationManager;
     private Location location;
     private GoogleMap gMap;
+    private static final int LOCATION_REQUEST_CODE = 123;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,7 +107,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback{
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 123);
+                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, LOCATION_REQUEST_CODE);
             }
         }
 
@@ -212,7 +213,7 @@ public class GMapFragment extends Fragment implements OnMapReadyCallback{
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 123) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onMapReady(gMap);
             }
